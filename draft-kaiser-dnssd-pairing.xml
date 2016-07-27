@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE rfc SYSTEM "rfc2629.dtd" [
+
+<!ENTITY rfc1033 PUBLIC ''
+   'http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.1033.xml'>
+<!ENTITY rfc1034 PUBLIC ''
+   'http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.1034.xml'>
+<!ENTITY rfc1035 PUBLIC ''
+   'http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.1035.xml'>
+<!ENTITY rfc2045 PUBLIC ''
+   'http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.2045.xml'>
+<!ENTITY rfc2119 PUBLIC ''
+   'http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.2119.xml'>
+<!ENTITY rfc2782 PUBLIC ''
+   'http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.2782.xml'>
+<!ENTITY rfc4055 PUBLIC ''
+   'http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.4055.xml'>
+<!ENTITY rfc4075 PUBLIC ''
+   'http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.4075.xml'>
+<!ENTITY rfc4279 PUBLIC ''
+   'http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.4279.xml'>
+<!ENTITY rfc5246 PUBLIC ''
+   'http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.5246.xml'>
+<!ENTITY rfc6762 PUBLIC ''
+   'http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.6762.xml'>
+<!ENTITY rfc6763 PUBLIC ''
+   'http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.6763.xml'>
+<!ENTITY rfc7626 PUBLIC ''
+   'http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.7626.xml'>
+<!ENTITY rfc7844 PUBLIC ''
+   'http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.7844.xml'>
+<!ENTITY rfc7858 PUBLIC ''
+   'http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.7858.xml'>
+
+<!ENTITY I-D.ietf-intarea-hostname-practice PUBLIC ''
+   "http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-intarea-hostname-practice.xml">
+<!ENTITY I-D.ietf-dprive-dnsodtls PUBLIC ''
+   "http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-dprive-dnsodtls.xml">
+<!ENTITY I-D.ietf-tls-tls13 PUBLIC ''
+   "http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-tls-tls13.xml">
+<!ENTITY I-D.ietf-dnssd-push PUBLIC ''
+   "http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-dnssd-push">
+
+<!ENTITY kw14a PUBLIC ''
+   "references/reference.kw14a.xml">
+<!ENTITY kw14b PUBLIC ''
+   "references/reference.kw14b.xml">
+]>
+
+<?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
+<?rfc compact="yes"?>
+<?rfc toc="yes"?>
+<?rfc symrefs="yes"?>
+<?rfc sortrefs="yes"?>
+
+<!-- Expand crefs and put them inline -->
+<?rfc comments='yes' ?>
+<?rfc inline='yes' ?>
+
+<rfc category="std"
+     docName="draft-pairing-kaiser-00.txt"
+     ipr="trust200902">
+
+<front>
+    <title abbrev="DNS-SD Privacy Extensions">
+      Privacy Extensions for DNS-SD
+    </title>
+
+   <author fullname="Christian Huitema" initials="C." surname="Huitema">
+      <organization>Microsoft</organization>
+      <address>
+        <postal>
+          <street> </street>
+          <city>Redmond</city>
+          <code>98052</code>
+          <region>WA</region>
+          <country>U.S.A.</country>
+        </postal>
+        <email>huitema@microsoft.com</email>
+      </address>
+    </author>
+
+   <author fullname="Daniel Kaiser" initials="D." surname="Kaiser">
+     <organization>University of Konstanz</organization>
+      <address>
+        <postal>
+          <street> </street>
+          <city>Konstanz</city>
+          <code>78457</code>
+          <region></region>
+          <country>Germany</country>
+        </postal>
+        <email>daniel.kaiser@uni-konstanz.de</email>
+      </address>
+    </author>
+
+    <date year="2016" />
+
+    <abstract>
+        <t>
+          TODO
+        </t>
+        <t>
+          TODO
+        </t>
+    </abstract>
+</front>
+
+<middle>
+<section title="Introduction">
+<t>
+  TODO
+</t>
+
+<section title="Requirements">
+<t>
+  The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+  "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
+  document are to be interpreted as described in <xref target="RFC2119" />.
+</t>
+</section>
+</section>
+
+<section title="Design of Pairing Techniques" anchor="design" >
+
+<section title="Device Pairing" anchor="pairingDesign" >
+
+<t>
+  Any private discovery solution needs to differentiate
+  between authorized devices, which are allowed to get information about discoverable entities,
+  and other devices, which should not be aware of the availability of private entities.
+  The commonly used solution to this problem is establishing a  "device pairing".
+  In our discovery scenarios, we envisage two kinds of pairings:
+</t>
+
+<t>
+<list style="numbers">
+<t>
+Inter-user pairing is a pairing between devices of "friends".
+      Since it has to be performed manually, e.g. by the means described above,
+      it is important to limit it to once per pair of friends.
+</t>
+<t>
+Intra-user pairing
+      is a pairing of devices of the same user. It can be performed
+      without any configuration by a meta-service (pairing data synchronization service) in
+      a trusted (home) network.
+    </t>
+</list>
+</t>
+
+<t>
+  The result of the pairing will be a shared secret, and optionally
+  mutually authenticated public keys added to a local web of trust.
+  Public key technology has many advantages, but shared secrets are typically easier to
+  handle on small devices.
+  We offer both a simple pairing just exchanging a shared secret, and an authenticated pairing
+  using public key technology.
+</t>
+
+<section title="Shared Secret">
+  <t>
+  Goal of the pairing process is establishing pairwise shared secrets.
+  If two users can leverage a secure private off-channel,
+  it suffices for one user to generate the shared secret and transmit it over this
+  off-channel.
+  It would be possible for the users to meet and orally agree on a password that
+  both users enter in their devices. This has the disadvantage of user-chosen passwords to
+  have low entropy and the inconvenience of having to type the password.
+  Leveraging QR-codes can overcome these disadvantages:
+  one user generates a shared secret, displays it in form of a QR-code, and the other user scans this code.
+  Strictly speaking, displaying and scanning QR-codes does not establish a secure private channel,
+  as others could also photograph this code; but it is reasonable secure for the application area of private service discovery.
+
+  Using Bluetooth LE might also be considered satisfactory as a compromise between
+  convenience and security.
+</t>
+</section>
+
+</section>
+
+<section title="Secure Authenticated Pairing Channel">
+<t>
+  Optionally, various versions of authenticated DH can be used to exchange a mutually authenticated shared secret
+  (which among other possibilities can leverage QR-codes for key fingerprint verification).
+  Using DH gives the benefit of provable security and the possibility to perform a pairing when not being able to meet in person.
+  Further, using DH to generate the shared secret has the advantage of both parties contributing to the shared secret (multiparty computation).
+</t>
+</section>
+
+
+<section title="Public Authentication Keys">
+  <t>
+  The public/private key pair - if at all - is just used for the aforementioned authenticated DH to
+  grant a mutually authenticated shared secret.
+  Obtaining and verifying a friend's public key can be achieved by different means.
+  For obtaining the keys, we can either leverage an existing PKI, e.g. the PGP web of trust,
+  or generate our own key pairs (and exchange them right before verifying).
+  For authenticating the keys, which boils down to comparing fingerprints on an off-channel,
+  we distinguish between means that demand users to be in close proximity of each other,
+  and means where users do not have to meet in person.
+  The former can e.g. be  realized by verifying a fingerprint leveraging QR-Codes,
+  the latter by reading a fingerprint during a phone call or using the socialist millionaires protocol.
+</t>
+</section>
+
+</section>
+
+
+<section title="Pairing Specification" anchor="solution" >
+
+<section title="Device Pairing" anchor="solution:pairing">
+<t>
+  Nodes that want to leverage the Private Directory Service for private service discovery among peers
+  MUST share a secret with each of these peers. The shared secret MUST be a 256 bit randomly chosen number.
+  The secret SHOULD be exchanged via device Pairing. The pairing process SHALL establish a mutually authenticated secure channel to
+  perform the shared secret exchange.
+  It is RECOMMENDED for both parties to contribute to the shared secret, e.g. by using a Diffie-Hellman key exchange.
+</t>
+<t>
+TODO: need to define the pairing service, or API. The API approach assumes that pairing is outside our scope,
+and is done using BT-LE, or any other existing mechanism. This is a bit of a cope-out. We could also define
+a pairing system that just sets the pairing with equivalent security as the "push button" or "PIN" solutions
+used for BT or Wi-Fi. And we could at this stage leverage a pre-existing security association, e.g. PGP
+identities or other certificates. If we do that, we should probably dedicate a top level section to
+specifying the minimal pairing service.
+
+Using a pre-existing asymmetric security association, we can use a key exchange similar to
+IKEv2 (RFC 7296). IKEv2 leverages the SIGMA protocols, which provide various methods of authenticated DH.
+It would also be possible to authenticate DH using symmetric passwords (e.g. Bellovin-Merritt).
+</t>
+</section>
+
+</section>
+
+<section title="Security Considerations">
+<t>
+  TODO
+</t>
+
+<section title="Attacks Against the Pairing System" >
+<t>
+There are a variety of attacks against pairing systems. They
+may result in compromised pairing keys. If an adversary manages to
+acquire a compromised key, the adversary will be able to perform
+private service discovery according to ...
+This will allow tracking of the service. The adversary will also
+be able to discover which private services are available for
+the compromised pairing.
+</t>
+<t>
+To mitigate such attacks, nodes MUST be able to quickly revoke
+a compromised pairing. This is however not sufficient, as the
+compromise of the pairing key could remain undetected for
+a long time. For further safety, nodes SHOULD assign a time limit
+to the validity of pairings, discard the corresponding keys when
+the time has passed, and establish new pairings.
+</t>
+<t>
+This later requirement of limiting the Time-To-Live can raise
+doubts about the usability of the protocol. The usability issues
+would be mitigated if the initial pairing provided both
+a shared secret and the means to renew that secret over time,
+e.g. using authenticated public keys.
+</t>
+</section>
+
+</section>
+
+
+<section title="IANA Considerations" anchor="iana">
+<t>
+This draft does not require any IANA action.
+</t>
+</section>
+
+<section title="Acknowledgments">
+    <t>
+      TODO
+    </t>
+</section>
+</middle>
+
+<back>
+<references title="Normative References">
+       &rfc2045;
+       &rfc2119;
+       &rfc4055;
+       &rfc4075;
+       &rfc6763;
+       &rfc4279;
+       &rfc5246;
+</references>
+<references title="Informative References">
+       &rfc1033;
+       &rfc1034;
+       &rfc1035;
+       &rfc2782;
+       &rfc6762;
+       &rfc7626;
+       &rfc7844;
+       &rfc7858;
+       &I-D.ietf-intarea-hostname-practice;
+       &I-D.ietf-dprive-dnsodtls;
+       &I-D.ietf-tls-tls13;
+       &I-D.ietf-dnssd-push;
+
+<reference anchor="KW14a" target="http://ieeexplore.ieee.org/xpl/articleDetails.jsp?arnumber=7011331">
+  <front>
+    <title>Adding Privacy to Multicast DNS Service Discovery</title>
+    <author initials="D." surname="Kaiser" fullname="Daniel Kaiser">
+      <organization/>
+    </author>
+    <author initials="M." surname="Waldvogel" fullname="Marcel Waldvogel">
+      <organization/>
+    </author>
+    <date year="2014"/>
+  </front>
+  <seriesInfo name="DOI" value="10.1109/TrustCom.2014.107"/>
+</reference>
+
+<reference anchor="KW14b" target="http://ieeexplore.ieee.org/xpl/articleDetails.jsp?arnumber=7056899">
+  <front>
+    <title>Efficient Privacy Preserving Multicast DNS Service Discovery</title>
+    <author initials="D." surname="Kaiser" fullname="Daniel Kaiser">
+      <organization/>
+    </author>
+    <author initials="M." surname="Waldvogel" fullname="Marcel Waldvogel">
+      <organization/>
+    </author>
+    <date year="2014"/>
+  </front>
+  <seriesInfo name="DOI" value="10.1109/HPCC.2014.141"/>
+</reference>
+
+
+</references>
+
+</back>
+</rfc>
