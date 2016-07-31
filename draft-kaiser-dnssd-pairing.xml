@@ -59,12 +59,12 @@
 <?rfc inline='yes' ?>
 
 <rfc category="std"
-     docName="draft-pairing-kaiser-00.txt"
+     docName="draft-kaiser-pairing-00.txt"
      ipr="trust200902">
 
 <front>
-    <title abbrev="DNS-SD Privacy Extensions">
-      Privacy Extensions for DNS-SD
+    <title abbrev="Device Pairing">
+      Device Pairing Using Short Authentication Strings
     </title>
 
    <author fullname="Christian Huitema" initials="C." surname="Huitema">
@@ -99,18 +99,56 @@
 
     <abstract>
         <t>
-          TODO
+          This document proposes a device pairing mechanism that establishes a relationship between two devices by
+          agreeing on a secret and manually verifying the secret's authenticity.
+          Pairing has to be performed only once per pair of devices, as for a re-discovery at any later point in time,
+          the exchanged secret can be used for mutual authentication.
         </t>
         <t>
-          TODO
+          The proposed pairing method is suited for each application area where human operated devices need to establish a
+          relation that allows configurationless and privacy preserving re-discovery at any later point in time.
+          Since privacy preserving applications are the main suitors, we especially care about privacy.
         </t>
     </abstract>
 </front>
 
 <middle>
 <section title="Introduction">
+  <t>
+  To engage in secure and privacy preserving communication, hosts need to differentiate
+  between authorized peers, which must both know about the host's presence and be able to decrypt messages sent by the host,
+  and other peers, which must not be able to decrypt the host's messages and ideally should  not be aware of the host's presence.
+  The necessary relationship between host and peer can be established by a centralized service, e.g. a certificate  authority,
+  by a web of trust, e.g. PGP, or -- without using global identities -- by device pairing.
+  </t>
+  
+  <t>
+    This document proposes a device pairing mechanism that provides human operated devices with pairwise authenticated secrets,
+    allowing mutual automatic re-discovery at any later point in time along with mutual private authentication.
+    We especially care about privacy and user-friendliness.
+  </t>
+
+  <t>
+    The proposed pairing mechanism consists of three steps needed to establish a relationship between a host and a peer:
+  </t>
+
+  <t>
+<list style="numbers">
 <t>
-  TODO
+   Discovery of the peer device. The host needs a means to discover network parameters necessary to establish a connection to the peer.
+   The host must not disclose its presence or any other information about the intended pairing to any other peer.
+</t>
+<t>
+  Agreeing on pairing data. The devices have to agree on pairing data, which can be used by both parties at any later point in time to
+  generate identifiers for re-discovery and to prove the authenticity of the pairing.
+  The pairing data can e.g. be a shared secret agreed upon leveraging a Diffie-Hellman key exchange.
+</t>
+<t>
+  Authenticate pairing data. Since in most cases the messages necessary to agree upon pairing data are send over an insecure channel, 
+  the authenticity of these messages has to be guaranteed; otherwise the pairing data is not suited as a means for a later proof of authenticity.
+  For the proposed pairing mechanism we use manual interaction to proof the authenticity of the pairing data.
+</t>
+</list>
 </t>
 
 <section title="Requirements">
@@ -122,115 +160,103 @@
 </section>
 </section>
 
-<section title="Design of Pairing Techniques" anchor="design" >
-
-<section title="Device Pairing" anchor="pairingDesign" >
+<section title="Design" anchor="design" >
 
 <t>
-  Any private discovery solution needs to differentiate
-  between authorized devices, which are allowed to get information about discoverable entities,
-  and other devices, which should not be aware of the availability of private entities.
-  The commonly used solution to this problem is establishing a  "device pairing".
-  In our discovery scenarios, we envisage two kinds of pairings:
+  In this section we discuss the design of pairing protocols that use manually verified short authentication strings (SAS).
+  Nguyen et al. <xref target="NR11" /> survey these protocols and compare them with respect to the amount of necessary user interaction and
+  the computation time needed on the devices.
+  The authors state that such a protocol is optimal with respect user interaction if it suffices for users to verify a single b-bit SAS
+  while having a one-shot attack success probability of 2^-b.
+  Further, n consecutive attacks on the protocol must not have a better success probability then n one-shot attacks.
 </t>
 
 <t>
-<list style="numbers">
-<t>
-Inter-user pairing is a pairing between devices of "friends".
-      Since it has to be performed manually, e.g. by the means described above,
-      it is important to limit it to once per pair of friends.
-</t>
-<t>
-Intra-user pairing
-      is a pairing of devices of the same user. It can be performed
-      without any configuration by a meta-service (pairing data synchronization service) in
-      a trusted (home) network.
-    </t>
-</list>
+  TODO Should I detail attacks and success probabilities from a theoretical/abstract point of view?
 </t>
 
 <t>
-  The result of the pairing will be a shared secret, and optionally
-  mutually authenticated public keys added to a local web of trust.
-  Public key technology has many advantages, but shared secrets are typically easier to
-  handle on small devices.
-  We offer both a simple pairing just exchanging a shared secret, and an authenticated pairing
-  using public key technology.
+  We divide pairing in three parts: discovery, agreement, and authentication, detailed in the following subsections.
 </t>
 
-<section title="Shared Secret">
+<section title="Discovery">
+
+</section>
+
+<section title="Agreement">
+<t>
+  Diffie-Hellman
+</t>
+</section>
+
+<section title="Authentication">
+<t>
+ Commitment
+ SAS: shown on the display and acknowledged by the users.
+ SAS: shown by one user and input by the other
+</t>
+<t>
+  Long Authentication String: If devices support QR code scanning, we can use  80bits:
+  hash(g^ab || nonce) where.
+</t>
+
+</section>
+
+
+<section title="Intra User Pairing">
   <t>
-  Goal of the pairing process is establishing pairwise shared secrets.
-  If two users can leverage a secure private off-channel,
-  it suffices for one user to generate the shared secret and transmit it over this
-  off-channel.
-  It would be possible for the users to meet and orally agree on a password that
-  both users enter in their devices. This has the disadvantage of user-chosen passwords to
-  have low entropy and the inconvenience of having to type the password.
-  Leveraging QR-codes can overcome these disadvantages:
-  one user generates a shared secret, displays it in form of a QR-code, and the other user scans this code.
-  Strictly speaking, displaying and scanning QR-codes does not establish a secure private channel,
-  as others could also photograph this code; but it is reasonable secure for the application area of private service discovery.
-
-  Using Bluetooth LE might also be considered satisfactory as a compromise between
-  convenience and security.
-</t>
-</section>
+  Users can pair their own devices in secure (home) networks without any interaction using a special DNS-SD pairing service.
+  </t>
+  <t>
+    USB
+  </t>
 
 </section>
 
-<section title="Secure Authenticated Pairing Channel">
-<t>
-  Optionally, various versions of authenticated DH can be used to exchange a mutually authenticated shared secret
-  (which among other possibilities can leverage QR-codes for key fingerprint verification).
-  Using DH gives the benefit of provable security and the possibility to perform a pairing when not being able to meet in person.
-  Further, using DH to generate the shared secret has the advantage of both parties contributing to the shared secret (multiparty computation).
-</t>
+<section title="Pairing Data Synchronization">
+  <t>
+    To make it sufficient for users to pair only one of their devices to one of their friends devices while still
+    being able to engage in later communication with all of this friend's devices with any of the own devices,
+    we offer the possibility to synchronize pairing data among devices of the same user.
+    Pairing data synchronization is performed via a special DNS-SD service (_pdsync._tls).
+  </t>
 </section>
+
+
 
 
 <section title="Public Authentication Keys">
   <t>
-  The public/private key pair - if at all - is just used for the aforementioned authenticated DH to
-  grant a mutually authenticated shared secret.
-  Obtaining and verifying a friend's public key can be achieved by different means.
-  For obtaining the keys, we can either leverage an existing PKI, e.g. the PGP web of trust,
-  or generate our own key pairs (and exchange them right before verifying).
-  For authenticating the keys, which boils down to comparing fingerprints on an off-channel,
-  we distinguish between means that demand users to be in close proximity of each other,
-  and means where users do not have to meet in person.
-  The former can e.g. be  realized by verifying a fingerprint leveraging QR-Codes,
-  the latter by reading a fingerprint during a phone call or using the socialist millionaires protocol.
+    Should we discuss public authentication keys whose fingerprints are verified during pairing?
 </t>
 </section>
 
 </section>
 
 
-<section title="Pairing Specification" anchor="solution" >
+<section title="Solution" anchor="solution" >
 
-<section title="Device Pairing" anchor="solution:pairing">
 <t>
-  Nodes that want to leverage the Private Directory Service for private service discovery among peers
-  MUST share a secret with each of these peers. The shared secret MUST be a 256 bit randomly chosen number.
-  The secret SHOULD be exchanged via device Pairing. The pairing process SHALL establish a mutually authenticated secure channel to
-  perform the shared secret exchange.
-  It is RECOMMENDED for both parties to contribute to the shared secret, e.g. by using a Diffie-Hellman key exchange.
+  TODO
+</t>
+
+<section title="Discovery">
+<t>
+  DNS-SD <xref target="RFC6763" /> over mDNS <xref target="RFC6762" /> (_pairing._tcp) using an instance name the
+  users agreed upon.
+</t>
+</section>
+
+<section title="Agreement and Authentication">
+<t>
+IKEv2   (RFC 7296). IKEv2 leverages the SIGMA protocols, which provide various methods of authenticated DH.
 </t>
 <t>
-TODO: need to define the pairing service, or API. The API approach assumes that pairing is outside our scope,
-and is done using BT-LE, or any other existing mechanism. This is a bit of a cope-out. We could also define
-a pairing system that just sets the pairing with equivalent security as the "push button" or "PIN" solutions
-used for BT or Wi-Fi. And we could at this stage leverage a pre-existing security association, e.g. PGP
-identities or other certificates. If we do that, we should probably dedicate a top level section to
-specifying the minimal pairing service.
-
-Using a pre-existing asymmetric security association, we can use a key exchange similar to
-IKEv2 (RFC 7296). IKEv2 leverages the SIGMA protocols, which provide various methods of authenticated DH.
-It would also be possible to authenticate DH using symmetric passwords (e.g. Bellovin-Merritt).
+EKE-EAP (RFC 6124)
 </t>
 </section>
+
+
 
 </section>
 
@@ -239,14 +265,9 @@ It would also be possible to authenticate DH using symmetric passwords (e.g. Bel
   TODO
 </t>
 
-<section title="Attacks Against the Pairing System" >
 <t>
 There are a variety of attacks against pairing systems. They
-may result in compromised pairing keys. If an adversary manages to
-acquire a compromised key, the adversary will be able to perform
-private service discovery according to ...
-This will allow tracking of the service. The adversary will also
-be able to discover which private services are available for
+may result in compromised pairing keys.
 the compromised pairing.
 </t>
 <t>
@@ -264,7 +285,6 @@ would be mitigated if the initial pairing provided both
 a shared secret and the means to renew that secret over time,
 e.g. using authenticated public keys.
 </t>
-</section>
 
 </section>
 
@@ -284,54 +304,23 @@ This draft does not require any IANA action.
 
 <back>
 <references title="Normative References">
-       &rfc2045;
        &rfc2119;
-       &rfc4055;
-       &rfc4075;
        &rfc6763;
-       &rfc4279;
-       &rfc5246;
+       &rfc6762;
 </references>
 <references title="Informative References">
-       &rfc1033;
-       &rfc1034;
-       &rfc1035;
-       &rfc2782;
-       &rfc6762;
-       &rfc7626;
-       &rfc7844;
-       &rfc7858;
-       &I-D.ietf-intarea-hostname-practice;
-       &I-D.ietf-dprive-dnsodtls;
-       &I-D.ietf-tls-tls13;
-       &I-D.ietf-dnssd-push;
 
-<reference anchor="KW14a" target="http://ieeexplore.ieee.org/xpl/articleDetails.jsp?arnumber=7011331">
+<reference anchor="NR11" target="">
   <front>
-    <title>Adding Privacy to Multicast DNS Service Discovery</title>
-    <author initials="D." surname="Kaiser" fullname="Daniel Kaiser">
+    <title>Authentication protocols based on low-bandwidth unspoofable channels: a comparative survey</title>
+    <author initials="L." surname="Nguyen" fullname="Long Hoang Nguyen">
       <organization/>
     </author>
-    <author initials="M." surname="Waldvogel" fullname="Marcel Waldvogel">
+    <author initials="A." surname="Roscoe" fullname="Andrew William Roscoe">
       <organization/>
     </author>
-    <date year="2014"/>
+    <date year="2011"/>
   </front>
-  <seriesInfo name="DOI" value="10.1109/TrustCom.2014.107"/>
-</reference>
-
-<reference anchor="KW14b" target="http://ieeexplore.ieee.org/xpl/articleDetails.jsp?arnumber=7056899">
-  <front>
-    <title>Efficient Privacy Preserving Multicast DNS Service Discovery</title>
-    <author initials="D." surname="Kaiser" fullname="Daniel Kaiser">
-      <organization/>
-    </author>
-    <author initials="M." surname="Waldvogel" fullname="Marcel Waldvogel">
-      <organization/>
-    </author>
-    <date year="2014"/>
-  </front>
-  <seriesInfo name="DOI" value="10.1109/HPCC.2014.141"/>
 </reference>
 
 
