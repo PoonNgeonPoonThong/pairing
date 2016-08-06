@@ -22,10 +22,16 @@
    'http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.4279.xml'>
 <!ENTITY rfc5246 PUBLIC ''
    'http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.5246.xml'>
+<!ENTITY rfc6124 PUBLIC ''
+   'http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.6124.xml'>
+<!ENTITY rfc6189 PUBLIC ''
+   'http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.6189.xml'>
 <!ENTITY rfc6762 PUBLIC ''
    'http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.6762.xml'>
 <!ENTITY rfc6763 PUBLIC ''
    'http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.6763.xml'>
+<!ENTITY rfc7296 PUBLIC ''
+   'http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.7296.xml'>
 <!ENTITY rfc7626 PUBLIC ''
    'http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.7626.xml'>
 <!ENTITY rfc7844 PUBLIC ''
@@ -249,11 +255,32 @@
 
 <section title="Agreement and Authentication">
 <t>
-IKEv2   (RFC 7296). IKEv2 leverages the SIGMA protocols, which provide various methods of authenticated DH.
+<xref target="RFC7296" />. IKEv2 leverages the SIGMA protocols, which provide various methods of authenticated DH.
 </t>
 <t>
-EKE-EAP (RFC 6124)
+  <xref target="RFC6124" />. EAP-EKE
 </t>
+<t>
+<xref target="RFC6189" />. ZTRP uses a commited DH exchange pairing method
+</t>
+
+
+<t>
+  Most efficient with respect to both, minimizing user interactoin (meaning minimizing the SAS that has the be veriyfied) and
+  the calculations the device has to be performed, is the improved Hoepman protocol <xref target="NR11" /> :
+</t>
+
+<t>
+<figure>
+<artwork>
+  A -> B : longhash(A, g^a)
+  B -> A : g^b
+  A -> B : g^a
+  A (manual auth) B: shorthash(g^ab)
+</artwork>
+</figure>
+</t>
+
 </section>
 
 
@@ -309,6 +336,9 @@ This draft does not require any IANA action.
        &rfc6762;
 </references>
 <references title="Informative References">
+       &rfc6124;
+       &rfc6189;
+       &rfc7296;
 
 <reference anchor="NR11" target="">
   <front>
