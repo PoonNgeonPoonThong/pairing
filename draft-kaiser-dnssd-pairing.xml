@@ -166,6 +166,60 @@
 </section>
 </section>
 
+<section title="Problem statement" anchor="problem" >
+<t>
+The general pairing requirement is easy to state: establish a trust relation between two entities in a 
+secure manner. But details matter, and in this section we explore the detailed requirements that guide
+our design.
+</t>
+<section title="Security" anchor="securityReq" >
+<t>
+The whole point of the protocol is to establish some shared secret. Goes without saying that 
+this should be done securely.
+</t>
+<t>
+TODO: discuss the actual goal. Is it a shared secret or a public key?
+</t>
+</section>
+<section title="Identity Assurance" anchor="verifyId" >
+<t>
+The parties in the pairing must be able to identify each other. To put it simply, if Alice believes 
+that she is establishing a pairing with Bob, she must somehow ensure that the pairing is happening
+with Bob, and not with some interloper like Eve or Nessie. Providing this assurance requires care at
+the user interface (UI), and also in the design of the protocol.
+</t>
+<t>
+Consider for example an attack in 
+which Eve tricks Alice into establishing a pairing, and then pretends to be Bob. Alice must be able 
+to discover that something is wrong, and refuse to establish a pairing. To do this,
+the UI needs to display the name of the parties beeing paired. (Discuss: what kind of name? Is it 
+exchanged a part of the protocol?) At a minimum, the parties engaged in the pairing must be able
+to verify the identity under which the pairing is established. 
+</t>
+<t>
+Because the protocol is executed without prior knowledge, it is typically vulnerable to
+"Man-in-the-middle" attacks. While Alice is trying to establish a pairing with Bob, Eve positions 
+herself in the middle. Instead of getting a pairing between Alice and Bob, Alice gets 
+paired with Eve, and Eve with Bob. This require specific features in the protocol to 
+detect man-in-the-middle attacks, and if possible resist them.
+</t>
+</section>
+
+<section title="Privacy Requirements" />
+<t>
+Snooping. Eve listens to the traffic on the network, and discovers that Alice is paired with Bob. 
+She may also discover private identifiers used by Alice and Bob, such as the values of public 
+keys, that can then be used later to track Alice or Bob.
+</t>
+
+<section title="Robustness" >
+<t>
+Denial of service. Eve prevents Alice and Bob from establishing a pairing.
+</t>
+
+
+</section>
+
 <section title="Design" anchor="design" >
 
 <t>
