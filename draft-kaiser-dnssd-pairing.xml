@@ -172,10 +172,21 @@ The general pairing requirement is easy to state: establish a trust relation bet
 secure manner. But details matter, and in this section we explore the detailed requirements that guide
 our design.
 </t>
-<section title="Security" anchor="securityReq" >
+<section title="Secure Pairing Over Internet Connections" anchor="securityReq" >
 <t>
-The whole point of the protocol is to establish some shared secret. Goes without saying that 
-this should be done securely.
+Many pairing protocols have been already developed, in particular for the
+pairing of devices over specific wireless networks. For example, the current BlueTooth 
+specifications include a pairing protocol that has evolved over several
+revisions towards better secrurity and usability <xref target="BTLEPairing" />.
+The Wi-Fi Alliance defined the Wi-Fi Protected Setup process to ease the setup of 
+security-enabled Wi-Fi networks in home and small office environments 
+<xref target="WPS" />. Other wireless standards have defined or are defining similar
+protocols, tailored to specific technologies.
+</t>
+<t>
+This specification defines a pairing protocol that is independent of the underlying 
+technology. We simply make the hypothesis that the two parties engaged in the pairing
+can discover each other and can exchange establish connections over IP.   
 </t>
 <t>
 TODO: discuss the actual goal. Is it a shared secret or a public key?
@@ -196,12 +207,19 @@ the UI needs to display the name of the parties beeing paired. (Discuss: what ki
 exchanged a part of the protocol?) At a minimum, the parties engaged in the pairing must be able
 to verify the identity under which the pairing is established. 
 </t>
+
+<section title="Resist Man-In-The-Middle Attacks" target="MITMReq" >
 <t>
 Because the protocol is executed without prior knowledge, it is typically vulnerable to
 "Man-in-the-middle" attacks. While Alice is trying to establish a pairing with Bob, Eve positions 
 herself in the middle. Instead of getting a pairing between Alice and Bob, Alice gets 
 paired with Eve, and Eve with Bob. This require specific features in the protocol to 
 detect man-in-the-middle attacks, and if possible resist them.
+</t>
+<t>
+TODO: review of user interface tricks used in the past. Rolling of eyes about "just works" case. 
+Quote of attacks against PIN based solutions, tension between short PIN and "dictionary"
+attacks.
 </t>
 </section>
 
@@ -211,10 +229,17 @@ Snooping. Eve listens to the traffic on the network, and discovers that Alice is
 She may also discover private identifiers used by Alice and Bob, such as the values of public 
 keys, that can then be used later to track Alice or Bob.
 </t>
+<t>
+TODO: point out that anything sent before the MITM defense can be obtained by the attacker.
+The displayed PIN will not match, the parties will abort the attempt, but if identities 
+are exchanged before consensus, the attacker will learn that Alice and Bob tried to
+establish a pairing. That can be bad.
+</t>
 
 <section title="Robustness" >
 <t>
-Denial of service. Eve prevents Alice and Bob from establishing a pairing.
+Denial of service. Eve prevents Alice and Bob from establishing a pairing. This happens if
+the protocol is easy to identify.
 </t>
 
 
@@ -407,7 +432,25 @@ This draft does not require any IANA action.
   </front>
 </reference>
 
+<reference anchor="BTLEPairing" target="https://developer.bluetooth.org/TechnologyOverview/Pages/LE-Security.aspx">
+  <front>
+    <title>Bluetooth Low Energy Security Overview</title>
+    <author>
+      <organization>Bluetooth SIG</organization>
+    </author>
+    <date year="2016"/>
+  </front>
+</reference>
 
+<reference anchor="WPS" target="http://www.wi-fi.org/discover-wi-fi/wi-fi-protected-setup">
+  <front>
+    <title>Wi-Fi Protected Setup</title>
+    <author>
+      <organization>Wi-Fi Alliance</organization>
+    </author>
+    <date year="2016"/>
+  </front>
+</reference>
 </references>
 
 </back>
