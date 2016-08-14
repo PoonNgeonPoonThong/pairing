@@ -166,18 +166,20 @@
 </section>
 </section>
 
+
 <section title="Problem statement" anchor="problem" >
 <t>
 The general pairing requirement is easy to state: establish a trust relation between two entities in a 
 secure manner. But details matter, and in this section we explore the detailed requirements that guide
 our design.
 </t>
+
 <section title="Secure Pairing Over Internet Connections" anchor="securityReq" >
 <t>
 Many pairing protocols have been already developed, in particular for the
 pairing of devices over specific wireless networks. For example, the current BlueTooth 
 specifications include a pairing protocol that has evolved over several
-revisions towards better secrurity and usability <xref target="BTLEPairing" />.
+revisions towards better security and usability <xref target="BTLEPairing" />.
 The Wi-Fi Alliance defined the Wi-Fi Protected Setup process to ease the setup of 
 security-enabled Wi-Fi networks in home and small office environments 
 <xref target="WPS" />. Other wireless standards have defined or are defining similar
@@ -192,6 +194,7 @@ can discover each other and can exchange establish connections over IP.
 TODO: discuss the actual goal. Is it a shared secret or a public key?
 </t>
 </section>
+
 <section title="Identity Assurance" anchor="verifyId" >
 <t>
 The parties in the pairing must be able to identify each other. To put it simply, if Alice believes 
@@ -207,23 +210,294 @@ the UI needs to display the name of the parties beeing paired. (Discuss: what ki
 exchanged a part of the protocol?) At a minimum, the parties engaged in the pairing must be able
 to verify the identity under which the pairing is established. 
 </t>
+</section>
 
-<section title="Resist Man-In-The-Middle Attacks" target="MITMReq" >
+<section title="Adequate user interface" anchor="MITMUIReq" >
 <t>
-Because the protocol is executed without prior knowledge, it is typically vulnerable to
+Because the pairing protocol is executed without prior knowledge, it is typically vulnerable to
 "Man-in-the-middle" attacks. While Alice is trying to establish a pairing with Bob, Eve positions 
 herself in the middle. Instead of getting a pairing between Alice and Bob, Alice gets 
-paired with Eve, and Eve with Bob. This require specific features in the protocol to 
-detect man-in-the-middle attacks, and if possible resist them.
+paired with Eve, and Eve with Bob. This requires specific features in the protocol to 
+detect man-in-the-middle attacks, and if possible resist them. The reference <xref target="NR11" /> 
+analyzes the various proposals to solve this problem, and in this document, we present 
+a layman description of these issues in <xref target="MITMCryptoReq" />. The
+various protocols proposed in the litterature impose diverse constraints at the UI
+interface, which we will review here.
+</t>
+<section title="Short PIN proved inadequate" >
+<t>
+The initial Bluetooth pairing protocol relied on four digit PIN. The device to be paired
+would display a pin. The user would read that pinand provide it to the pairing device.
+The pin would then be used in a Password Authenticated Key Exchange. There was
+a similar option in Wi-Fi Protected Setup <xref target="WPS" />. There were
+various attacks against the actual protocol. Some were caused by issues
+in the protocol, but most of the problems are tied 
+to the usability of short PINs.
 </t>
 <t>
+In the reference implementation, the pin is picked at random by the paired device before
+the beginning of the exchange. But this requires that the paired device be capable of
+generating and displaying a four digit number. It turns out that many devices cannot do
+that. For example, an audio headset does not have any display capability. These limited
+devices ended up using static pins, with fixed values like "0000" or "0001". 
+</t>
+<t>
+Even when the paired device could display a random pin, that pin will have to be copied
+by the user on the pairing device. It turns out that users do not like copying long
+series of numbers, and the usability thus dictated that the pins be short -- four digits
+in practice. But there is only so much assurance that can be derived from a four digit
+key.
+</t>
+<t>
+It is interesting to note that the latest revisions of the Bluetooth Pairing protocol 
+<xref target="BTLEPairing" /> do not anymore include the short PIN option. The 
+PIN entry methods have been superceded by the simple "just works" method for devices
+without displays, and by a procedure based on "short authentication strings" when
+displays are available.
+</t>
+
+</section>
+
+<section title="Push buttons just work, but are insecure" >
+<t>
 TODO: review of user interface tricks used in the past. Rolling of eyes about "just works" case. 
-Quote of attacks against PIN based solutions, tension between short PIN and "dictionary"
-attacks.
+
 </t>
 </section>
 
-<section title="Privacy Requirements" />
+<section title="Short range communication">
+<t>
+TODO: Explain that this is great, could use QR codes, Near field communication, even voice. 
+But not a general solution. Also, relies on physical 
+</t>
+</section>
+
+<section title="Short authentication strings" >
+<t>
+TODO: Explain why with the right crypto, just reading the same string at two points
+beats entering a shorter PIN.
+</t>
+</section>
+
+</section>
+
+<section title="Resist cryptographic attacks" anchor="MITMCryptoReq" >
+<t>
+It is tempting to believe that once two peers are connected, they could create
+a secret with a few simple steps, such as for example exchange two nonces, 
+hash the concatenation of this nonces with the shared secret, display
+a short authentication string composed of a short version of that hash 
+on each device, and verify that that the two values match. The sequence
+of messages would be something like:
+</t>
+<t>
+<figure>
+<artwork>
+    Alice                       Bob
+    g^xA --&gt;
+                           &lt;-- g^xB
+    nA --&gt;
+                              &lt;-- nB
+    Computes              Computes
+    s = g^xAxB            s = g^xAxB
+    h = hash(s|nA|nB)     h = hash(s|nA|nB)
+    Displays short        Displays short
+    version of h          version of h
+</artwork>
+</figure>
+</t>
+<t>
+If the two short hashes match, Alice and Bob are supposedly assured that
+they have computed the same secret, but there is a problem.
+The exchange may not deter a smart attacker
+in the middle. Let's redraw the same message flow, this time involving Eve:
+</t>
+<t>
+<figure>
+<artwork>
+    Alice                Eve                Bob
+    g^xA --&gt;
+                         g^xA'--&gt;
+                                        &lt;-- g^xB
+                      &lt;--g^xB'
+    nA --&gt;
+                         nA --&gt; 
+                                          &lt;-- nB
+                       Picks nB'
+                       smartly
+                      &lt;--nB'
+    Computes                             Computes
+    s' = g^xAxB'                           s" = g^xA'xB
+    h' = hash(s|nA|nB')                    h" = hash(s"|nA|nB)
+    Displays short                       Displays short
+    version of h'                        version of h"
+</artwork>
+</figure>
+</t>
+<t>
+Let's now assumes that to pick the nonce nB' smartly, Eve runs the following
+algorithm:
+</t>
+<t>
+<figure>
+<artwork>
+    s' = g^xAxB'
+    s" = g^xA'xB
+    repeat
+       pick a new version of nB'
+       h' = hash(s|nA|nB')
+       h" = hash(s"|nA|nB)
+    until the short version of h' 
+    matches the short version of h"
+</artwork>
+</figure>
+</t>
+<t>
+Of course, running this algorithm will require in theory as many iterations as
+the possible values of the short hash. But hash algorithms are fast, and it
+is possible to try millions of values in less than a second. If the short
+string is made up of fewer than 6 digits, Eve will find a matching nonce 
+quickly, and Alice and Bob will hardly notice the delay. Even if the 
+matching string is as long as 8 letters, Eve will probably find a value
+where the short versions of h' and h" are close enough, e.g. start and end
+with the same two or three letters. Alice and Bob may well be fooled.
+</t>
+<t>
+The classic solution to such problems is to "commit" the value of the hash
+before sending it. In the modified exchange, Alice and Bob exchange a secure
+hash of their nonces before sending the actual value:
+</t>
+<t>
+<figure>
+<artwork>
+    Alice                       Bob
+    g^xA --&gt;
+                            &lt;-- g^xB
+    hash(nA) --&gt;
+                        &lt;-- hash(nB)
+    nA --&gt;
+                              &lt;-- nB
+    Computes              Computes
+    s = g^xAxB            s = g^xAxB
+    verifies hash(nB)     verifies hash(nA)
+    h = hash(s|nA|nB)     h = hash(s|nA|nB)
+    Displays short        Displays short
+    version of h          version of h
+</artwork>
+</figure>
+</t>
+<t>
+Alice will only disclose nA after receiving hash(nB) and
+having confirmation from Bob that hash(nA) has been received, and
+similarly Bob will only disclose nB after receiving hash(nA) and
+having confirmation from Bob that hash(nB) has been received.
+At that point, Eve has a problem. She can still forge the values of the nonces
+but she needs to pick the nonce nB' before the actual value of nB has been 
+disclosed. On first sight, it seems that once she has committed by sending
+hash(nB'), it will be impossible to send anything but the nB'. Eve would
+still have a random chance of fooling Alice and Bob, but it will be a very
+small chance: one in million if the short authentication string is made of
+6 digits, even fewer if that string is longer. Bob and Alice should
+be safe. There is still a theoretical problem, but only if Eve is way more powerful
+than the average attacker.
+</t>
+<t>
+Suppose that Eve has access to almost infinite budgets, and gets help from 
+very smart cryptographers. Alice and Bob don't know that, but Eve has been
+able to generate hash collisions. She has access to a special hash value,
+which we will note hash(magic),
+and to a large number of nonces that all hash to that same special value.
+Building that catalog took lots of resource, but for Eve that's a great
+investment, because it could be used for multiple attacks. She can use
+it each time Alice tries to create a pairing with Bob, or in fact when
+anyone tries to do that. The attack will work as follow:
+</t>
+<t>
+<figure>
+<artwork>
+    Alice                Eve                Bob
+    g^xA --&gt;
+                         g^xA'--&gt;
+                                        &lt;-- g^xB
+                      &lt;--g^xB'
+    hash(nA) --&gt;
+                         hash(nA) --&gt;
+                                     &lt;-- hash(nB)
+                     &lt;-- hash(magic)
+    nA --&gt;
+                         nA --&gt; 
+                                          &lt;-- nB
+                       Picks nB'
+                       smartly
+                      &lt;--nB'
+    Computes                             Computes
+    s' = g^xAxB'                           s" = g^xA'xB
+    verifies hash(nB)                      verifies hash(nA)
+    h' = hash(s|nA|nB')                    h" = hash(s"|nA|nB)
+    Displays short                       Displays short
+    version of h'                        version of h"
+</artwork>
+</figure>
+</t>
+<t>
+The way Eve picks nB smartly is by iterating through the hashes in its
+catalog of values that hash to the same "magic" value:
+</t>
+<t>
+<figure>
+<artwork>
+    s' = g^xAxB'
+    s" = g^xA'xB
+    repeat
+       pick a new version of nB' *from the catalog*
+       h' = hash(s|nA|nB')
+       h" = hash(s"|nA|nB)
+    until the short version of h' 
+    matches the short version of h"
+</artwork>
+</figure>
+</t>
+<t>
+That may be a far fetched attack, but there are a couple of ways to protect
+against it. The first way is to constrain the nonces to be exactly the 
+same length as resulting hash. Most collision finders require long input 
+strings; they typically do not work well for strings that are not longer 
+than the hash itself. The other way is to insert in the hash a component
+that will be different at every exchange, making Eve's pre-computed
+catalog useless. The modified algorithm would thus be:
+</t>
+<t>
+<figure>
+<artwork>
+    Alice                       Bob
+    g^xA --&gt;
+                            &lt;-- g^xB
+
+    Computes              Computes
+    s = g^xAxB            s = g^xAxB
+    picks nonce rA        picks nonce rB
+    nA = hash(rA)         nB = hash(rB)
+
+    hash(s|nA) --&gt;
+                       &lt;-- hash(s|nB)
+    nA --&gt;
+                              &lt;-- nB
+
+    verifies hash(s|nB)   verifies hash(s|nA)
+    h = hash(s|nA|nB)     h = hash(s|nA|nB)
+    Displays short        Displays short
+    version of h          version of h
+</artwork>
+</figure>
+</t>
+<t>
+This combination will prove very hard for Eve to attack. In practice, it will
+require breaking either the hash function or the Diffie Hellman exchange. 
+We will require that our pairing protocol incorporates this design.
+</t>
+</section>
+
+<section title="Privacy Requirements" >
 <t>
 Snooping. Eve listens to the traffic on the network, and discovers that Alice is paired with Bob. 
 She may also discover private identifiers used by Alice and Bob, such as the values of public 
@@ -235,15 +509,16 @@ The displayed PIN will not match, the parties will abort the attempt, but if ide
 are exchanged before consensus, the attacker will learn that Alice and Bob tried to
 establish a pairing. That can be bad.
 </t>
+</section>
 
 <section title="Robustness" >
 <t>
 Denial of service. Eve prevents Alice and Bob from establishing a pairing. This happens if
 the protocol is easy to identify.
 </t>
-
-
 </section>
+
+</section> <!-- end of problem statement -->
 
 <section title="Design" anchor="design" >
 
