@@ -260,23 +260,96 @@ displays are available.
 
 <section title="Push buttons just work, but are insecure" >
 <t>
-TODO: review of user interface tricks used in the past. Rolling of eyes about "just works" case. 
-
+Some devices are unable to input or display any code. The industry more or less
+converged on a "push button" solution. When the button is pushed, devices enter
+a "pairing" mode, during which they will accept a pairing request from whatever 
+other device connects to them.
+</t>
+<t>
+The Bluetooth Pairing protocol <xref target="BTLEPairing" /> denotes that as 
+the "just works" method. It does indeed work, and if the pairing succeeds
+the devices will later be able to use the pairing keys to authenticate connections.
+However, the procedure does not provide any protection against
+MITM attacks during the pairing process. The only protection is that pushing the
+button will only allow pairing for a limited time, thus limiting the
+opportunities of attacks.
+</t>
+<t>
+As we set up to define a pairing protocol with a briad set of applications,
+we cannot limit ourselves to an insecure "push button" method. But we probably
+need to allow for a mode of operation that works for input-limited
+and display limited devices.
 </t>
 </section>
 
 <section title="Short range communication">
 <t>
-TODO: Explain that this is great, could use QR codes, Near field communication, even voice. 
-But not a general solution. Also, relies on physical 
+There have been several attempts to define pairing protocols that use "secure
+channels." Most of them are based on short range communication systems,
+where the short range limits the feasibility for attackers to access the channels.
+Example of such limited systems include for example:
+</t>
+<t>
+<list style="symbols" >
+<t>
+QR codes, displayed on the screen of one device, and read by the camera of the other device.
+</t>
+<t>
+Near Field Communication (NFC) systems, which provides wireless communication with a very short range.
+</t>
+<t>
+Sound systems, in which one systems emits a sequence of sounds or ultrasounds that is picked by the microphone of the other system.
+</t>
+</list>
+</t>
+<t>
+A common problem with these solutions is that they require special capabilities that may not be present in every device. 
+Another problem is that they are often one-way channels. And another problem is that the side channel is not
+necessarily secret. QR codes could be read by third parties. Powerful radios antennas might be able to interfere with 
+NFC. Sensitive microphones might pick the sounds.
 </t>
 </section>
 
 <section title="Short authentication strings" >
 <t>
-TODO: Explain why with the right crypto, just reading the same string at two points
-beats entering a shorter PIN.
+The evolving pairing protocols seem to converge towards a "display and compare" method. 
+This is in line with academic studies, such as <xref target="KFR09" /> or <xref target="USK11" />.
+This point to a very simple scenario:
 </t>
+<t>
+<list style="numbers">
+<t>
+Alice initiates pairing
+</t>
+<t>
+Bob selects Alice's device from a list.
+</t>
+<t>
+Alice and Bob compare displayed strings that represent a fingerprint of the key.
+</t>
+<t>
+If the strings match, Alice and Bob accept the pairing.
+</t>
+</list>
+</t>
+<t>
+Most existing pairing protocols display the fingerprint of the key as a 6 or 7 digit
+numbers. Usability studies show that gives good results, with little risk that
+users mistakenly accept two different numbers as matching. However, the authors of 
+<xref target="USK11" /> found that people had more success comparing computer 
+generated sentences than comparing numbers. This is in line with the argument in
+<xref target="XKCD936" /> to use sequences of randomly chosen common words as passwords. 
+On the other hand, standardizing strings is more complicated than standardizing numbers.
+We would need to specify a list of common words, and the process to go from a binary 
+fingerprint to a set of words. We would need to be concerned with internationalization 
+issues, such as using different lists of words in German and in English. This could
+require negotiation of word lists or languages inside the pairing protocols. 
+</t>
+<t>
+In contrast, numbers are easy to specify, as in "take a 20 bit number and 
+display it as an integer using decimal notation."
+</t>
+
 </section>
 
 </section>
@@ -701,6 +774,49 @@ This draft does not require any IANA action.
       <organization/>
     </author>
     <author initials="A." surname="Roscoe" fullname="Andrew William Roscoe">
+      <organization/>
+    </author>
+    <date year="2011"/>
+  </front>
+</reference>
+
+<reference anchor="KFR09" target="">
+  <front>
+    <title>Authentication protocols based on low-bandwidth unspoofable channels: a comparative survey</title>
+    <author initials="R." surname="Kainda" fullname="Ronald Kainda">
+      <organization/>
+    </author>
+    <author initials="I." surname="Flechais" fullname="Ivan Flechais">
+      <organization/>
+    </author>
+    <author initials="A." surname="Roscoe" fullname="Andrew William Roscoe">
+      <organization/>
+    </author>
+    <date year="2009"/>
+  </front>
+</reference>
+
+<reference anchor="USK11" target="">
+  <front>
+    <title>. Pairing devices for social interactions: a comparative usability evaluation </title>
+    <author initials="E." surname="Uzun" fullname="Ersin Uzun">
+      <organization/>
+    </author>
+    <author initials="N." surname="Saxena" fullname="Nitesh Saxena">
+      <organization/>
+    </author>
+    <author initials="A." surname="Kumar" fullname="Arun Kumar">
+      <organization/>
+    </author>
+    <date year="2009"/>
+  </front>
+</reference>
+
+
+<reference anchor="XKCD936" target="https://www.xkcd.com/936/" >
+   <front>
+    <title>XKCD: Password Strength</title>
+    <author initials="R." surname="Munroe" fullname="Randall Munroe">
       <organization/>
     </author>
     <date year="2011"/>
