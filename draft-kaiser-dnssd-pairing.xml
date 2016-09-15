@@ -20,6 +20,8 @@
    'http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.4075.xml'>
 <!ENTITY rfc4279 PUBLIC ''
    'http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.4279.xml'>
+<!ENTITY rfc5705 PUBLIC ''
+   'http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.5705.xml'>
 <!ENTITY rfc5246 PUBLIC ''
    'http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.5246.xml'>
 <!ENTITY rfc6124 PUBLIC ''
@@ -39,6 +41,9 @@
 <!ENTITY rfc7858 PUBLIC ''
    'http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.7858.xml'>
 
+<!ENTITY I-D.huitema-dnssd-privacy PUBLIC ''
+   "http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.huitema-dnssd-privacy.xml">
+
 <!ENTITY I-D.ietf-intarea-hostname-practice PUBLIC ''
    "http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-intarea-hostname-practice.xml">
 <!ENTITY I-D.ietf-dprive-dnsodtls PUBLIC ''
@@ -47,6 +52,9 @@
    "http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-tls-tls13.xml">
 <!ENTITY I-D.ietf-dnssd-push PUBLIC ''
    "http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-dnssd-push">
+<!ENTITY I-D.miers-tls-sas PUBLIC ''
+   "http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.miers-tls-sas">
+
 
 <!ENTITY kw14a PUBLIC ''
    "references/reference.kw14a.xml">
@@ -572,22 +580,89 @@ We will require that our pairing protocol incorporates this design.
 
 <section title="Privacy Requirements" >
 <t>
-Snooping. Eve listens to the traffic on the network, and discovers that Alice is paired with Bob. 
-She may also discover private identifiers used by Alice and Bob, such as the values of public 
-keys, that can then be used later to track Alice or Bob.
+Pairing exposes a relation between several devices and their owners. Adversaries may
+attempt to collect this information, for example in an attempt to track 
+devices, their owners, or their "social graph." It is often argued that
+pairing could be performed in a safe place, from which adversaries are assumed 
+absent, but experience shows that such assumptions are often misguided.
+It is much safer to acknowledge the privacy ssues and design the pairing
+process accordingly.
 </t>
 <t>
-TODO: point out that anything sent before the MITM defense can be obtained by the attacker.
-The displayed PIN will not match, the parties will abort the attempt, but if identities 
-are exchanged before consensus, the attacker will learn that Alice and Bob tried to
-establish a pairing. That can be bad.
+In order to start the pairing process, devices must first discover each other.
+We do not have the option of
+using the private discovery protocol <xref target="I-D.huitema-dnssd-privacy" /> 
+since the privacy of that protocol depends on the pre-existing pairing. 
+In the simplest design, 
+one of the devices will announce a "friendly name" using DNS-SD. 
+Adversaries could monitor the discovery protocol, and record that name.
+An alternative would for one device to announce a random name, and communicate
+it to the other device via some private channel. There is an obvious
+tradeoff here: friendly names are easier to use but less private than
+random names. We anticipate that different users will choose different
+tradeoffs, for example using friendly names if they assume that
+the environment is "safe," and using random names in public places.
 </t>
+<t>
+When the pairing process is executed, the two devices will establish a connection,
+establish and validate a pairing secret. As discussed in <xref target="MITMUIReq" />,
+we have to assume that adversaries can mount MITM attacks. The pairing 
+protocol can detect such attacks and resit them, but the attackers will
+have access to all messages exchanged before validation
+is performed. It is important to not exchange any privacy sensitive information
+before that validation. This includes, for example, the identities of the
+parties or their public keys.
+</t>
+
 </section>
 
-<section title="Robustness" >
+<section title="Using TLS" >
 <t>
-Denial of service. Eve prevents Alice and Bob from establishing a pairing. This happens if
-the protocol is easy to identify.
+The pairing algorithms typically combine the establishment of a shared
+secret through an [EC]DH exchange, with the verification of that secret
+through display and comparisons of "Short Authentication String" (SAS).
+As explained in <xref target="MITMCryptoReq" />, the
+secure comparison requires a "commit before disclose" mechanism.
+</t>
+<t>
+We have three possible designs: create a pairing algorithm from scratch,
+specifying our own crypto exchanges; use an [EC]DH version of TLS to
+negotiate a shared secret, export the key to the application as specified 
+in <xref target="RFC5705" />, and implement
+the "commit before disclose" and SAS verification as part of the pairing
+application; or, use TLS, integrate the "commit before disclose" and SAS
+verification as TLS extensions, and export the verified key to the
+application as specified 
+in <xref target="RFC5705" />.
+</t>
+<t>
+Creating an algorithm from scratch is probably a bad idea. We would need to
+reinvent a lot of the negotiation capabilities that are part of TLS, not
+to mention algorithm agility, post quantum, and all that sort of things. 
+It is thus pretty clear that we should use TLS.
+</t>
+<t>
+It turns out that there was already an attempt to define 
+SAS extensions for TLS (<xref target="I-D.miers-tls-sas" />). 
+It is a very close match
+to our third design option, full integration of SAS in TLS,
+but the draft has expired, and there does not seem to be
+any support for the SAS options in the common TLS packages.
+</t>
+<t>
+In our design, we will choose the middle ground option -- use TLS for
+[EC]DH,
+and implement the SAS verification as part of the pairing application.
+This minimizes dependencies on TLS packages to the availability
+of a key export API following <xref target="RFC5705" />.
+We will need to specify the hash algorithm used for the SAS
+computation and validation, which carries some of the issues
+associated with "designing our own crypto." One
+solution would be to use the same hash algorithm negotiated by
+the TLS connection, but common TLS packages do not not always 
+make this algorithm identifier available
+through standard APIs. A fallback solution is to
+specify a state of the art keyed MAC algorithm.
 </t>
 </section>
 
@@ -759,6 +834,7 @@ This draft does not require any IANA action.
 <back>
 <references title="Normative References">
        &rfc2119;
+       &rfc5705;
        &rfc6763;
        &rfc6762;
 </references>
@@ -766,6 +842,8 @@ This draft does not require any IANA action.
        &rfc6124;
        &rfc6189;
        &rfc7296;
+       &I-D.huitema-dnssd-privacy;
+       &I-D.miers-tls-sas;
 
 <reference anchor="NR11" target="">
   <front>
