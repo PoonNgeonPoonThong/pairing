@@ -607,22 +607,31 @@ reading a QR code.
 </t>
 <t>
 QR code could be particularly useful when starting discovery. QR code can 
-encode an alphanumeric string. , which should be enough for a name and a 
-simple secret – which would for example enable a sequence of DNS-SD 
-discovery, then TLS using ECDH/PSK. It is very probably better than reading 
+encode an alphanumeric string, which could for example encode the
+selected the chosen name of the pairing service. This would enable automatic
+discovery, and would be easier to use than reading 
 the random name of the day and matching it against the results of DNS-SD.
+</t>
+<t>
+In addition to the instance name, the QR code could also encode a simple
+secret. This may not be sufficient to guarantee the secrecy of the
+pairing service, since adversaries might be able to see the QR code,
+but it could improve the security of the initial Diffie-Hellman exchange.
+For example, it could allow usage of TLS with ECDH/PSK, which is 
+arguably harder to intercept than anonymous ECDH, or than variant using 
+a well known password. 
 </t>
 <t>
 QR codes may or may not be useful in the verification phase. Scanning a QR code
 may not be much more efficient than visual verification of a short string. The 
 user has to take a picture of the QR code, which is arguably not 
-simpler than just “look at the number on the screen and tell me whether it is 
-the same as yours.”
+simpler than just "look at the number on the screen and tell me whether it is 
+the same as yours."
 </t>
 <t>
 If the case of a man-in-the-middle attack, the evaluation of the QR code will fail. 
-The “client” that took the picture will know that, but the “server” will not. The 
-user will still need to click some “Cancel” button on the server, which means that
+The "client" that took the picture will know that, but the "server" will not. The 
+user will still need to click some "Cancel" button on the server, which means that
 the process will not be completely automated.
 </t>
 
@@ -759,7 +768,7 @@ The client will discover that name and the corresponding connection parameters.
 </t>
 </section>
 
-<section title="Agreement and Authentication">
+<section title="Agreement and Authentication" anchor="serviceSpec">
 <t>
 <xref target="RFC7296" />. IKEv2 leverages the SIGMA protocols, which provide various methods of authenticated DH.
 </t>
