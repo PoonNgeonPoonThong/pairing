@@ -120,7 +120,7 @@
     <abstract>
         <t>
           This document proposes a device pairing mechanism that establishes a relationship between two devices by
-          agreeing on a secret and manually verifying the secret's authenticity.
+          agreeing on a secret and manually verifying the secret's authenticity using an SAS (short authentication string).
           Pairing has to be performed only once per pair of devices, as for a re-discovery at any later point in time,
           the exchanged secret can be used for mutual authentication.
         </t>
@@ -156,17 +156,19 @@
 <list style="numbers">
 <t>
    Discovery of the peer device. The host needs a means to discover network parameters necessary to establish a connection to the peer.
-   The host must not disclose its presence or any other information about the intended pairing to any other peer.
+   During this discovery process, neither the host nor the peer must disclose its presence.
 </t>
 <t>
   Agreeing on pairing data. The devices have to agree on pairing data, which can be used by both parties at any later point in time to
   generate identifiers for re-discovery and to prove the authenticity of the pairing.
-  The pairing data can e.g. be a shared secret agreed upon leveraging a Diffie-Hellman key exchange.
+  The pairing data can e.g. be a shared secret agreed upon via a Diffie-Hellman key exchange.
 </t>
 <t>
   Authenticate pairing data. Since in most cases the messages necessary to agree upon pairing data are send over an insecure channel, 
-  the authenticity of these messages has to be guaranteed; otherwise the pairing data is not suited as a means for a later proof of authenticity.
-  For the proposed pairing mechanism we use manual interaction to proof the authenticity of the pairing data.
+  means that guarantee the authenticity of these messages are necessary;
+  otherwise the pairing data is in turn not suited as a means for a later proof of authenticity.
+  For the proposed pairing mechanism we use manual interaction involving an SAS 
+  (short authentication string) to proof the authenticity of the pairing data.
 </t>
 </list>
 </t>
@@ -181,7 +183,7 @@
 </section>
 
 
-<section title="Problem statement" anchor="problem" >
+<section title="Problem Statement and Requirements" anchor="problem" >
 <t>
 The general pairing requirement is easy to state: establish a trust relation between two entities in a 
 secure manner. But details matter, and in this section we explore the detailed requirements that guide
@@ -219,60 +221,62 @@ the user interface (UI), and also in the design of the protocol.
 <t>
 Consider for example an attack in 
 which Eve tricks Alice into establishing a pairing, and then pretends to be Bob. Alice must be able 
-to discover that something is wrong, and refuse to establish a pairing. To do this,
-the UI needs to display the name of the parties beeing paired. (Discuss: what kind of name? Is it 
-exchanged a part of the protocol?) At a minimum, the parties engaged in the pairing must be able
-to verify the identity under which the pairing is established. 
+to discover that something is wrong, and refuse to establish a pairing.
+At a minimum, the parties engaged in the pairing must be able to verify the identity under which the pairing is established. 
 </t>
 </section>
 
-<section title="Adequate user interface" anchor="MITMUIReq" >
+<section title="Adequate User Interface" anchor="MITMUIReq" >
 <t>
 Because the pairing protocol is executed without prior knowledge, it is typically vulnerable to
 "Man-in-the-middle" attacks. While Alice is trying to establish a pairing with Bob, Eve positions 
-herself in the middle. Instead of getting a pairing between Alice and Bob, Alice gets 
-paired with Eve, and Eve with Bob. This requires specific features in the protocol to 
+herself in the middle. Instead of getting a pairing between Alice and Bob, both Alice and Bob get
+paired with Eve. This requires specific features in the protocol to 
 detect man-in-the-middle attacks, and if possible resist them. The reference <xref target="NR11" /> 
 analyzes the various proposals to solve this problem, and in this document, we present 
 a layman description of these issues in <xref target="MITMCryptoReq" />. The
-various protocols proposed in the litterature impose diverse constraints at the UI
+various protocols proposed in the literature impose diverse constraints at the UI
 interface, which we will review here.
 </t>
-<section title="Short PIN proved inadequate" >
+<section title="Short PIN Proved Inadequate" >
 <t>
-The initial Bluetooth pairing protocol relied on four digit PIN. The device to be paired
-would display a pin. The user would read that pinand provide it to the pairing device.
-The pin would then be used in a Password Authenticated Key Exchange. There was
-a similar option in Wi-Fi Protected Setup <xref target="WPS" />. There were
-various attacks against the actual protocol. Some were caused by issues
-in the protocol, but most of the problems are tied 
-to the usability of short PINs.
+The initial Bluetooth pairing protocol relied on a four digit PIN, displayed by one of the devices to be paired.
+The user would read that PIN and provide it to the other device.
+The PIN would then be used in a Password Authenticated Key Exchange.
+Wi-Fi Protected Setup <xref target="WPS" /> offered a similar option.
+There were various attacks against the actual protocol; some of the problems were caused by issues
+in the protocol, but most were tied to the usage of short PINs.
 </t>
 <t>
-In the reference implementation, the pin is picked at random by the paired device before
-the beginning of the exchange. But this requires that the paired device be capable of
+In the reference implementation, the PIN is picked at random by the paired device before
+the beginning of the exchange. But this requires that the paired device is capable of
 generating and displaying a four digit number. It turns out that many devices cannot do
 that. For example, an audio headset does not have any display capability. These limited
-devices ended up using static pins, with fixed values like "0000" or "0001". 
+devices ended up using static PINs, with fixed values like "0000" or "0001".
 </t>
 <t>
-Even when the paired device could display a random pin, that pin will have to be copied
+Even when the paired device could display a random PIN, that PIN will have to be copied
 by the user on the pairing device. It turns out that users do not like copying long
-series of numbers, and the usability thus dictated that the pins be short -- four digits
-in practice. But there is only so much assurance that can be derived from a four digit
-key.
+series of numbers, and the usability thus dictated that the PINs be short -- four digits
+in practice. But there is only so much assurance as can be derived from a four digit key.
 </t>
 <t>
 It is interesting to note that the latest revisions of the Bluetooth Pairing protocol 
-<xref target="BTLEPairing" /> do not anymore include the short PIN option. The 
-PIN entry methods have been superceded by the simple "just works" method for devices
-without displays, and by a procedure based on "short authentication strings" when
+<xref target="BTLEPairing" /> do not include the short PIN option anymore. The 
+PIN entry methods have been superseded by the simple "just works" method for devices
+without displays, and by a procedure based on an SAS (short authentication string) when
 displays are available.
+</t>
+
+<t>
+A further problem with these PIN based approaches is that -- in contrast to SASes --
+the PIN is a secret instrumental in the security algorithm.
+To guarantee security, this PIN had to be transmitted via a secure out of band channel.
 </t>
 
 </section>
 
-<section title="Push buttons just work, but are insecure" >
+<section title="Push Buttons Just Work, But Are Insecure" >
 <t>
 Some devices are unable to input or display any code. The industry more or less
 converged on a "push button" solution. When the button is pushed, devices enter
@@ -289,14 +293,14 @@ button will only allow pairing for a limited time, thus limiting the
 opportunities of attacks.
 </t>
 <t>
-As we set up to define a pairing protocol with a briad set of applications,
+As we set up to define a pairing protocol with a broad set of applications,
 we cannot limit ourselves to an insecure "push button" method. But we probably
 need to allow for a mode of operation that works for input-limited
 and display limited devices.
 </t>
 </section>
 
-<section title="Short range communication" anchor="shortRange" >
+<section title="Short Range Communication" anchor="shortRange" >
 <t>
 There have been several attempts to define pairing protocols that use "secure
 channels." Most of them are based on short range communication systems,
@@ -318,17 +322,17 @@ Sound systems, in which one systems emits a sequence of sounds or ultrasounds th
 </t>
 <t>
 A common problem with these solutions is that they require special capabilities that may not be present in every device. 
-Another problem is that they are often one-way channels. And another problem is that the side channel is not
+Another problem is that they are often one-way channels. Yet another problem is that the side channel is not
 necessarily secret. QR codes could be read by third parties. Powerful radios antennas might be able to interfere with 
 NFC. Sensitive microphones might pick the sounds. We will discuss the specific case of QR codes in <xref target="QRDiscuss" />.
 </t>
 </section>
 
-<section title="Short authentication strings" >
+<section title="Short Authentication Strings" >
 <t>
 The evolving pairing protocols seem to converge towards a "display and compare" method. 
 This is in line with academic studies, such as <xref target="KFR09" /> or <xref target="USK11" />.
-This point to a very simple scenario:
+This points to a very simple scenario:
 </t>
 <t>
 <list style="numbers">
@@ -374,7 +378,7 @@ It is tempting to believe that once two peers are connected, they could create
 a secret with a few simple steps, such as for example exchange two nonces, 
 hash the concatenation of this nonces with the shared secret, display
 a short authentication string composed of a short version of that hash 
-on each device, and verify that that the two values match. The sequence
+on each device, and verify that the two values match. The sequence
 of messages would be something like:
 </t>
 <t>
@@ -450,8 +454,9 @@ where the short versions of h' and h" are close enough, e.g. start and end
 with the same two or three letters. Alice and Bob may well be fooled.
 </t>
 <t>
-The classic solution to such problems is to "commit" the value of the hash
-before sending it. In the modified exchange, Alice and Bob exchange a secure
+The classic solution to such problems is to "commit" a possible attacker to a nonce before sending it.
+This commitment can be realized by a hash.
+In the modified exchange, Alice and Bob exchange a secure
 hash of their nonces before sending the actual value:
 </t>
 <t>
