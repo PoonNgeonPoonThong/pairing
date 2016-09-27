@@ -22,6 +22,8 @@
    'http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.4075.xml'>
 <!ENTITY rfc4279 PUBLIC ''
    'http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.4279.xml'>
+<!ENTITY rfc5246 PUBLIC ''
+   'http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.5246.xml'>
 <!ENTITY rfc5705 PUBLIC ''
    'http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.5705.xml'>
 <!ENTITY rfc5246 PUBLIC ''
@@ -770,32 +772,203 @@ The client will discover that name and the corresponding connection parameters.
 
 <section title="Agreement and Authentication" anchor="serviceSpec">
 <t>
-<xref target="RFC7296" />. IKEv2 leverages the SIGMA protocols, which provide various methods of authenticated DH.
+The pairing protocol is build using TLS. The following description uses the
+presentation language defined in section 4 of <xref target="RFC5246" />.
+The protocol uses five message types, defined in the following enum:
 </t>
-<t>
-  <xref target="RFC6124" />. EAP-EKE
-</t>
-<t>
-<xref target="RFC6189" />. ZTRP uses a commited DH exchange pairing method
-</t>
-
-
-<t>
-  Most efficient with respect to both, minimizing user interactoin (meaning minimizing the SAS that has the be veriyfied) and
-  the calculations the device has to be performed, is the improved Hoepman protocol <xref target="NR11" /> :
-</t>
-
 <t>
 <figure>
 <artwork>
-  A -> B : longhash(A, g^a)
-  B -> A : g^b
-  A -> B : g^a
-  A (manual auth) B: shorthash(g^ab)
+enum {
+   ClientHash(1),
+   ServerRandom(2),
+   ClientRandom(3),
+   ServerSuccess(4),
+   ClientSuccess(5)
+} PairingMessageType;
 </artwork>
 </figure>
 </t>
-
+<t>
+Devices implementing the service MUST 
+support TLS 1.2 <xref target="RFC5246" />, and SHOULD support TLS 1.3 as soon as 
+it becomes available.
+When using TLS, the client and server MUST negotiate a ciphersuite that
+provides providing forward secrecy (PFS), and strong encryption (256 bits symmetric 
+key). All implementations using TLS 1.2 SHOULD be able to negotiate
+the cipher suite TLS_DH_anon_WITH_AES_256_CBC_SHA256.
+</t>
+<t>
+Once the TLS connection has been established, each party extracts the pairing secret 
+S_p from the connection context per <xref target="RFC5705" />, using the following 
+parameters:
+</t>
+<t>
+<list style="hanging" hangIndent="6">
+<t hangText="Disambiguating label string:" >
+"PAIRING SECRET"
+</t>
+<t hangText="Context value:" >
+empty.
+</t>
+<t hangText="Length value:">
+32 bytes (256 bits).
+</t>
+</list>
+</t>
+<t>
+Once S_p has been obtained, the client picks a random number R_c, exactly 32 bytes 
+long. The client then select an hash algorithm, which SHOULD be the same algorithm as 
+negotiated for building the PRF in the TLS connection. If there is no suitable API to 
+retrieve that algorithm, the client MAY use SHA256 instead. The client then computes 
+the hash value H_c as:
+</t>
+<t>
+<list>
+<t>
+H_c = HMAC_hash(S_p, R_c)
+</t>
+<t>
+Where "HMAC_hash" is the HMAC function constructed with the selected algorithm.
+</t>
+</list>
+</t>
+<t>
+The client transmit the selected hash function and the computed value of H_c 
+in the Client Hash message, over the TLS connection:
+</t>
+<t>
+<figure>
+<artwork>
+struct {
+   PairingMessageType messageType;
+   hashAlgorithm hash;
+   uint8 hashLength;
+   opaque H_c[hashLength];
+} ClientHashMessage;
+</artwork>
+</figure>
+</t>
+<t>
+<list style="hanging" hangIndent="6">
+<t hangText="messageType" >
+Set to "ClientHash".
+</t>
+<t hangText="hash" >
+The code of the selected hash algorithm, per definition of HashAlgorithm in section 7.4.1.1.1 of <xref target="RFC5246" />.
+</t>
+<t hangText="hashLength" >
+The length of the hash H_c, which MUST be consistent with the selected algorithm "hash".
+</t>
+<t hangText="H_c" >
+The value of the client hash.
+</t>
+</list>
+</t>
+<t>
+Upon reception of this message, the server stores its value. The server picks a random number R_s,
+exactly 32 bytes long, and transmits it to the client in the server hash message, over the TLS connection:
+</t>
+<t>
+<figure>
+<artwork>
+struct {
+   PairingMessageType messageType;
+   opaque R_s[32];
+} ServerRandomMessage;
+</artwork>
+</figure>
+</t>
+<t>
+<list style="hanging" hangIndent="6">
+<t hangText="messageType" >
+Set to "ServerRandom".
+</t>
+<t hangText="R_s" >
+The value of the random number chosen by the server.
+</t>
+</list>
+</t>
+<t>
+Upon reception of this message, the client discloses its own random
+number by transmitting client random message:
+</t>
+<t>
+<figure>
+<artwork>
+struct {
+   PairingMessageType messageType;
+   opaque R_c[32];
+} ClientRandomMessage;
+</artwork>
+</figure>
+</t>
+<t>
+<list style="hanging" hangIndent="6">
+<t hangText="messageType" >
+Set to "ClientRandom".
+</t>
+<t hangText="R_c" >
+The value of the random number chosen by the client.
+</t>
+</list>
+</t>
+<t>
+Upon reception of this message, the server verifies that the 
+number R_c hashes to the previously received value H_c. If
+the number do not match, the server MUST abandon the pairing
+attempt and abort the TLS connection.
+</t>
+<t>
+At this stage, both client and server can compute the short
+hash SAS as:
+</t>
+<t>
+<list>
+<t>
+SAS = first 20 bits of HMAC_hash(S_p, R_c + R_s)
+</t>
+<t>
+Where "HMAC_hash" is the HMAC function constructed with the hash
+algorithm selected by the client in the ClientHashMessage.
+</t>
+</list>
+</t>
+<t>
+Both client and server display the 20 bit value as a decimal integer,
+and ask the user to compare the values. If the value do not match, the user
+cancels the pairing. Otherwise, the protocol continues with the
+exchamge of names, both server and client announcing their own preferred
+name in a Success message
+</t>
+<t>
+<figure>
+<artwork>
+struct {
+   PairingMessageType messageType;
+   uint8 nameLength;
+   opaque name[nameLength];
+} ClientRandomMessage;
+</artwork>
+</figure>
+</t>
+<t>
+<list style="hanging" hangIndent="6">
+<t hangText="messageType" >
+Set to "ClientSuccess" if transmitted by the client, "ServerSuccess" if by the server.
+</t>
+<t hangText="nameLength" >
+The length of the string encoding the selected name.
+</t>
+<t hangText="name" >
+The selected name of the client or the server, encoded as a string of UTF8 characters.
+</t>
+</list>
+</t>
+<t>
+After receiving these messages, client and servers can orderly close the TLS connection, 
+terminating the pairing exchange.
+</t>
 </section>
 
 
@@ -847,6 +1020,7 @@ This draft does not require any IANA action.
 <back>
 <references title="Normative References">
        &rfc2119;
+       &rfc5246;
        &rfc5705;
        &rfc6763;
        &rfc6762;
