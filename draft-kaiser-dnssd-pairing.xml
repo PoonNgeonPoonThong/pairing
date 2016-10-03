@@ -88,12 +88,12 @@
     </title>
 
    <author fullname="Christian Huitema" initials="C." surname="Huitema">
-      <organization>Microsoft</organization>
+      <organization></organization>
       <address>
         <postal>
           <street> </street>
-          <city>Redmond</city>
-          <code>98052</code>
+          <city>Clyde Hill</city>
+          <code>98004</code>
           <region>WA</region>
           <country>U.S.A.</country>
         </postal>
@@ -573,7 +573,10 @@ application as specified
 in <xref target="RFC5705" />.
 </t>
 <t>
-Creating an algorithm from scratch is probably a bad idea. We would need to
+When faced with the same choice, the designers of ZRTP <xref target="RFC6189" />
+chose to design a new protocol integrated in the general framework of real
+time communications. We don't want to follow that path, and would rather not
+create yet another protocol. We would need to
 reinvent a lot of the negotiation capabilities that are part of TLS, not
 to mention algorithm agility, post quantum, and all that sort of things. 
 It is thus pretty clear that we should use TLS.
@@ -1042,10 +1045,8 @@ This draft does not require any IANA action.
 </references>
 <references title="Informative References">
        &rfc2104;
-       &rfc6124;
        &rfc6151;
        &rfc6189;
-       &rfc7296;
        &I-D.huitema-dnssd-privacy;
        &I-D.miers-tls-sas;
 
