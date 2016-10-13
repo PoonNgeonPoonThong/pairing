@@ -665,16 +665,21 @@ experience. We will make provision for the optional usage of QR codes.
 <section title="Discovery">
 <t>
 During the discovery phase, the client will find the server. There are two possible experiences depending of whether
-QR codes are supported or not. If QR codes are supported, the discovery proceeds as follow:
+QR codes are supported or not.
+If QR codes are supported, the discovery process can be independent of DNS-SD, because 
+QR codes allow the transmission of a sufficient amount of data.
+Leveraging QR codes, the discovery proceeds as follows:
+
 </t>
 <t>
 <list style="numbers">
 <t>
-The server displays a QR code containing the its chosen instance name. 
+  The server displays a QR code containing the clients A and AAAA resource records,
+  and further the SRV resource record corresponding to the pairing service instance. A privacy preserving instance name is not
+  necessary, because this instance is never published via an unsecured network.
 </t>
 <t>
-The client scans the QR code, and discovery is performed automatically, without
-further client interaction.
+The client scans the QR code retrieving the necessary information for establishing a connection to the server.
 </t>
 </list>
 </t>
@@ -782,10 +787,15 @@ in <xref target="serviceSpec" />.
 <t>
 The discovery uses DNS-SD <xref target="RFC6763" /> over mDNS <xref target="RFC6762" />.
 The pairing service is identified in DNS SD as "_pairing._tcp".
-</t>
-<t>
 When the pairing service starts, the server starts publishing the chosen instance name.
 The client will discover that name and the corresponding connection parameters.
+</t>
+<t>
+If QR code scanning is available as OOB channel, the discovery data is
+directly transmitted via QR codes instead of DNS-SD over mDNS.
+[[TODO: We should precisely specify the data layout of this QR code.
+It could either be the wire format of the corresponding resource records (which would be easier for us),
+or a more efficient representation. If we chose the wire format, we could use a fix name as instance name.]]
 </t>
 </section>
 
