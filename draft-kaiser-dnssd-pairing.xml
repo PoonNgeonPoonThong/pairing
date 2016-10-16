@@ -192,8 +192,8 @@ our design.
 
 <section title="Secure Pairing Over Internet Connections" anchor="securityReq" >
 <t>
-Many pairing protocols have been already developed, in particular for the
-pairing of devices over specific wireless networks. For example, the current BlueTooth 
+Many pairing protocols have already been developed, in particular for the
+pairing of devices over specific wireless networks. For example, the current Bluetooth 
 specifications include a pairing protocol that has evolved over several
 revisions towards better security and usability <xref target="BTLEPairing" />.
 The Wi-Fi Alliance defined the Wi-Fi Protected Setup process to ease the setup of 
@@ -204,25 +204,26 @@ protocols, tailored to specific technologies.
 <t>
 This specification defines a pairing protocol that is independent of the underlying 
 technology. We simply make the hypothesis that the two parties engaged in the pairing
-can discover each other and can exchange establish connections over IP.   
+can discover each other and then establish connections over IP in order to
+agree a shared secret.
 </t>
 <t>
-TODO: discuss the actual goal. Is it a shared secret or a public key?
+[[TODO: Should we support certificates besides a shared secret?]]
 </t>
 </section>
 
-<section title="Identity Assurance" anchor="verifyId" >
+<section title="Identity Assurance" anchor="verifyId">
 <t>
 The parties in the pairing must be able to identify each other. To put it simply, if Alice believes 
-that she is establishing a pairing with Bob, she must somehow ensure that the pairing is happening
-with Bob, and not with some interloper like Eve or Nessie. Providing this assurance requires care at
-the user interface (UI), and also in the design of the protocol.
+that she is establishing a pairing with Bob, she must somehow ensure that the pairing is actually
+established with Bob, and not with some interloper like Eve or Nessie.
+Providing this assurance requires designing both the protocol and the user interface (UI) with care.
 </t>
 <t>
 Consider for example an attack in 
-which Eve tricks Alice into establishing a pairing, and then pretends to be Bob. Alice must be able 
-to discover that something is wrong, and refuse to establish a pairing.
-At a minimum, the parties engaged in the pairing must be able to verify the identity under which the pairing is established. 
+which Eve tricks Alice into engaging in a pairing process while pretending to be Bob. Alice must be able 
+to discover that something is wrong, and refuse to establish the pairing.
+The parties engaged in the pairing must at least be able to verify their identities, respectively.
 </t>
 </section>
 
@@ -238,6 +239,7 @@ a layman description of these issues in <xref target="MITMCryptoReq" />. The
 various protocols proposed in the literature impose diverse constraints at the UI
 interface, which we will review here.
 </t>
+
 <section title="Short PIN Proved Inadequate" >
 <t>
 The initial Bluetooth pairing protocol relied on a four digit PIN, displayed by one of the devices to be paired.
@@ -299,7 +301,6 @@ need to allow for a mode of operation that works for input-limited
 and display limited devices.
 </t>
 </section>
-
 <section title="Short Range Communication" anchor="shortRange" >
 <t>
 There have been several attempts to define pairing protocols that use "secure
@@ -372,7 +373,7 @@ display it as an integer using decimal notation."
 
 </section>
 
-<section title="Resist cryptographic attacks" anchor="MITMCryptoReq" >
+<section title="Resist Cryptographic Attacks" anchor="MITMCryptoReq" >
 <t>
 It is tempting to believe that once two peers are connected, they could create
 a secret with a few simple steps, such as for example exchange two nonces, 
