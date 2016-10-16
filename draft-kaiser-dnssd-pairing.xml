@@ -655,22 +655,28 @@ the process will not be completely automated.
 
 <t>
 In this section we discuss the design of pairing protocols that use manually 
-verified short authentication strings (SAS), focusing on the user
-experience. We will make provision for the optional usage of QR codes.
+verified short authentication strings (SAS), considering both security and user experience.
 </t>
 
 <t>
-  We divide pairing in three parts: discovery, agreement, and authentication, detailed in the following subsections.
+ We divide pairing in three parts: discovery, agreement, and authentication, detailed in the following subsections.
 </t>
 
 <section title="Discovery">
 <t>
-During the discovery phase, the client will find the server. There are two possible experiences depending of whether
-QR codes are supported or not.
+The goal of the discovery phase is establishing a connection, which is later used to
+exchange the pairing data, between the two devices that are about to be paired
+in an IP network without any a priori knowledge and without publishing any private information.
+In accordance with TLS, we refer to the device initiating the cryptographic protocol as client,
+and to the other device as server; the server has to be discoverable by the client.
+</t>
+<t>
+Granting privacy during the discovery phase without relying on a priori knowledge demands another user interaction (besides
+the SAS verification during the authentication phase).
+There are two possible ways of realizing this user interaction depending on whether QR codes are supported or not.
 If QR codes are supported, the discovery process can be independent of DNS-SD, because 
 QR codes allow the transmission of a sufficient amount of data.
-Leveraging QR codes, the discovery proceeds as follows:
-
+Leveraging QR codes, the discovery proceeds as follows.
 </t>
 <t>
 <list style="numbers">
@@ -685,7 +691,7 @@ The client scans the QR code retrieving the necessary information for establishi
 </list>
 </t>
 <t>
-If QR codes are not supported, the discovery will require some user interaction:
+If QR codes are not supported, the discovery proceeds as follows.
 </t>
 <t>
 <list style="numbers">
@@ -698,8 +704,8 @@ available on the local network. This may result in the discovery
 of several servers.
 </t>
 <t>
-The client user selects from the list of available servers the instance 
-name that matches the name displayed by the server.
+Among these available "pairing servers" the client user 
+selects the name that matches the name displayed by the server.
 </t>
 </list>
 </t>
@@ -707,27 +713,24 @@ name that matches the name displayed by the server.
 
 <section title="Agreement">
 <t>
-Once the server has been selected, the client connects to it without
-further user intervention. Client and server exchange the required 
-messages, and both display an SAS, normally 
-a number encoded over up to 7 decimal digits.
-</t>
-<t>
-The users are asked to validate the pairing by comparing the SASes.
-If they match, each user enters an agreement, for example 
-by pressing a button labeled "OK". If they do not match, each user
-should cancel the pairing, for example 
-by pressing a button labeled "CANCEL". 
+Once the server has been selected, the client connects to it without further user intervention.
+Client and server use this connection for exchanging data that allows them to agree on a shared secret
+by using a cryptographic protocol that yields an SAS. We discussed design aspects of such protocols in <xref target="MITMCryptoReq" />.
 </t>
 </section>
 
 <section title="Authentication">
 <t>
-Once the agreement has been performed, each device displays the 
-"real" name of the other device, as exchanged through the pairing 
-protocol. Each user verifies that the name matches what they expect.
-If the names are validated, each user approves the pairing, which will
-then be remembered.
+In the authentication phase, the users are asked to validate the pairing by comparing the SASes -- typically represented by a number encoded over up to 7 decimal digits.
+If the SASes match, each user enters an agreement, for example by pressing a button labeled "OK", which results in the pairing being remembered.
+If they do not match, each user should cancel the pairing, for example by pressing a button labeled "CANCEL". 
+</t>
+
+<t>
+Depending on whether QR codes are supported, the SAS may also be represented as QR code.
+Despite the fact that using QR codes to represent the authentication string renders using longer authentication strings feasible,
+we suggest to always generate an SAS during the agreement phase, because this makes realizations of the agreement phase and the authentication phase independent.
+Devices may display the "real" name of the other device alongside the SAS.
 </t>
 
 </section>
