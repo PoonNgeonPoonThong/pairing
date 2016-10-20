@@ -236,7 +236,7 @@ paired with Eve. This requires specific features in the protocol to
 detect man-in-the-middle attacks, and if possible resist them. The reference <xref target="NR11" /> 
 analyzes the various proposals to solve this problem, and in this document, we present 
 a layman description of these issues in <xref target="MITMCryptoReq" />. The
-various protocols proposed in the literature impose diverse constraints at the UI
+various protocols proposed in the literature impose diverse constraints on the UI
 interface, which we will review here.
 </t>
 
@@ -488,13 +488,13 @@ but she needs to pick the nonce nA' before the actual value of nA has been
 disclosed. On first sight, it seems that once she has committed by sending
 hash(nA'), it will be impossible to send anything but the nA'. Eve would
 still have a random chance of fooling Alice and Bob, but it will be a very
-small chance: one in million if the short authentication string is made of
+small chance: one in a million if the short authentication string is made of
 6 digits, even fewer if that string is longer. 
 </t>
 <t>
 Nguyen et al. <xref target="NR11" /> survey these protocols and compare them with respect to the amount of necessary user interaction and
   the computation time needed on the devices.
-  The authors state that such a protocol is optimal with respect user interaction if it suffices for users to verify a single b-bit SAS
+  The authors state that such a protocol is optimal with respect to user interaction if it suffices for users to verify a single b-bit SAS
   while having a one-shot attack success probability of 2^-b.
   Further, n consecutive attacks on the protocol must not have a better success probability then n one-shot attacks.
 </t>
@@ -502,7 +502,7 @@ Nguyen et al. <xref target="NR11" /> survey these protocols and compare them wit
 There is still a theoretical problem, if Eve has somehow managed to 
 "crack" the hash function. We build some "defense in depth" by 
 some simple measures. In the design presented above, the hash "h_a"
-depends of the shared secret "s", which acts as a "salt" and reduces
+depends on the shared secret "s", which acts as a "salt" and reduces
 the effectiveness of potential attacks based on pre-computed 
 catalogs. For simplicity, the design used a simple concatenation 
 mechanism, but we could instead use a keyed-hash message authentication 
@@ -545,7 +545,7 @@ the environment is "safe," and using random names in public places.
 During the pairing process, the two devices establish a connection
 and validate a pairing secret. As discussed in <xref target="MITMUIReq" />,
 we have to assume that adversaries can mount MITM attacks. The pairing 
-protocol can detect such attacks and resit them, but the attackers will
+protocol can detect such attacks and resist them, but the attackers will
 have access to all messages exchanged before validation
 is performed. It is important to not exchange any privacy sensitive information
 before that validation. This includes, for example, the identities of the
@@ -557,18 +557,18 @@ parties or their public keys.
 <section title="Using TLS" >
 <t>
 The pairing algorithms typically combine the establishment of a shared
-secret through an [EC]DH exchange, with the verification of that secret
+secret through an [EC]DH exchange with the verification of that secret
 through displaying and comparison of a "short authentication string" (SAS).
 As explained in <xref target="MITMCryptoReq" />, the
 secure comparison requires a "commit before disclose" mechanism.
 </t>
 <t>
-We have three possible designs: create a pairing algorithm from scratch,
-specifying our own crypto exchanges; use an [EC]DH version of TLS to
+We have three possible designs: (1) create a pairing algorithm from scratch,
+specifying our own crypto exchanges; (2) use an [EC]DH version of TLS to
 negotiate a shared secret, export the key to the application as specified 
 in <xref target="RFC5705" />, and implement
 the "commit before disclose" and SAS verification as part of the pairing
-application; or, use TLS, integrate the "commit before disclose" and SAS
+application; or, (3) use TLS, integrate the "commit before disclose" and SAS
 verification as TLS extensions, and export the verified key to the
 application as specified 
 in <xref target="RFC5705" />.
@@ -598,7 +598,7 @@ This minimizes dependencies on TLS packages to the availability
 of a key export API following <xref target="RFC5705" />.
 We will need to specify the hash algorithm used for the SAS
 computation and validation, which carries some of the issues
-associated with "designing our own crypto." One
+associated with "designing our own crypto". One
 solution would be to use the same hash algorithm negotiated by
 the TLS connection, but common TLS packages do not not always 
 make this algorithm identifier available
