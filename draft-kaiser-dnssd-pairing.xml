@@ -900,7 +900,7 @@ The value of the client hash.
 </t>
 <t>
 Upon reception of this message, the server stores its value. The server picks a random number R_s,
-exactly 32 bytes long, and transmits it to the client in the server hash message, over the TLS connection:
+exactly 32 bytes long, and transmits it to the client in the server random message, over the TLS connection:
 </t>
 <t>
 <figure>
@@ -924,7 +924,7 @@ The value of the random number chosen by the server.
 </t>
 <t>
 Upon reception of this message, the client discloses its own random
-number by transmitting client random message:
+number by transmitting the client random message:
 </t>
 <t>
 <figure>
@@ -968,7 +968,7 @@ algorithm selected by the client in the ClientHashMessage.
 </list>
 </t>
 <t>
-Both client and server display the 20 bit value as a decimal integer,
+Both client and server display the SAS as a decimal integer,
 and ask the user to compare the values. If the values do not match, the user
 cancels the pairing. Otherwise, the protocol continues with the
 exchange of names, both server and client announcing their own preferred
