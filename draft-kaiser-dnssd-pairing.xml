@@ -377,7 +377,7 @@ display it as an integer using decimal notation."
 <t>
 It is tempting to believe that once two peers are connected, they could create
 a secret with a few simple steps, such as for example exchange two nonces, 
-hash the concatenation of this nonces with the shared secret, display
+hash the concatenation of these nonces with the shared secret that is about to be established, display
 a short authentication string composed of a short version of that hash 
 on each device, and verify that the two values match. The sequence
 of messages would be something like:
@@ -427,7 +427,7 @@ in the middle. Let's redraw the same message flow, this time involving Eve:
 </figure>
 </t>
 <t>
-Let's now assumes that to pick the nonce nB' smartly, Eve runs the following
+Let's now assume that to pick the nonce nB' smartly, Eve runs the following
 algorithm:
 </t>
 <t>
@@ -457,8 +457,8 @@ with the same two or three letters. Alice and Bob may well be fooled.
 <t>
 The classic solution to such problems is to "commit" a possible attacker to a nonce before sending it.
 This commitment can be realized by a hash.
-In the modified exchange, Alice and Bob exchange a secure
-hash of their nonces before sending the actual value:
+In the modified exchange, Alice sends a secure
+hash of her nonce before sending the actual value:
 </t>
 <t>
 <figure>
@@ -485,9 +485,8 @@ Alice will only disclose nA after
 having confirmation from Bob that hash(nA) has been received.
 At that point, Eve has a problem. She can still forge the values of the nonces
 but she needs to pick the nonce nA' before the actual value of nA has been 
-disclosed. On first sight, it seems that once she has committed by sending
-hash(nA'), it will be impossible to send anything but the nA'. Eve would
-still have a random chance of fooling Alice and Bob, but it will be a very
+disclosed.
+Eve would still have a random chance of fooling Alice and Bob, but it will be a very
 small chance: one in a million if the short authentication string is made of
 6 digits, even fewer if that string is longer. 
 </t>
