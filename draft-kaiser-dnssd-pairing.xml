@@ -1029,8 +1029,8 @@ mitigate such attacks.
 
 <t>
 The establishment of the pairing results in the creation of a shared
-secret. After the establishment of the pairing relation, 
-attackers who compromise one of the device could access the shared
+secret. After the establishment of the pairing relation,
+attackers who compromise one of the devices could access the shared
 secret. This will enable them to either track or spoof the devices. 
 To mitigate such attacks, nodes MUST store the secret safely,
 and MUST be able to quickly revoke
