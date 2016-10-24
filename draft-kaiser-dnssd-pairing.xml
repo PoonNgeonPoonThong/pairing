@@ -1009,27 +1009,36 @@ terminating the pairing exchange.
 
 <section title="Security Considerations">
 <t>
-  [[TODO: elaborate]]
+We need to consider two types of attacks against a pairing 
+system: attacks that occur during the establishment of the 
+pairing relation, and attacks that occur after that 
+establishment.
 </t>
 
 <t>
-There are a variety of attacks against pairing systems. They
-may result in compromised pairing keys.
+During the establishment of the pairing system, we are
+concerned with privacy attacks and with MITM attacks. Privacy attacks
+reveal the existence of a pairing between two devices, which can be used 
+to track graphs of relations. MITM attacks result in compromised pairing
+keys. The
+discovery procedures specified in <xref target="discoverSpec" /> 
+and the authentication procedures specified in 
+<xref target="serviceSpec" /> are specifically designed to
+mitigate such attacks.
 </t>
+
 <t>
-To mitigate such attacks, nodes MUST be able to quickly revoke
+The establishment of the pairing results in the creation of a shared
+secret. After the establishment of the pairing relation, 
+attackers who compromise one of the device could access the shared
+secret. This will enable them to either track or spoof the devices. 
+To mitigate such attacks, nodes MUST store the secret safely,
+and MUST be able to quickly revoke
 a compromised pairing. This is however not sufficient, as the
 compromise of the pairing key could remain undetected for
 a long time. For further safety, nodes SHOULD assign a time limit
 to the validity of pairings, discard the corresponding keys when
 the time has passed, and establish new pairings.
-</t>
-<t>
-The requirement of limiting the Time-To-Live of a pairing can raise
-doubts about the usability of the protocol. The usability issues
-would be mitigated if the initial pairing provided both
-a shared secret and the means to renew that secret over time,
-e.g. using authenticated public keys.
 </t>
 
 </section>
