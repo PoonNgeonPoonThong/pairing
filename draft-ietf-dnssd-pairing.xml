@@ -1,0 +1,1153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE rfc SYSTEM "rfc2629.dtd" [
+
+<!ENTITY rfc1033 PUBLIC ''
+   'http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.1033.xml'>
+<!ENTITY rfc1034 PUBLIC ''
+   'http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.1034.xml'>
+<!ENTITY rfc1035 PUBLIC ''
+   'http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.1035.xml'>
+<!ENTITY rfc2045 PUBLIC ''
+   'http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.2045.xml'>
+<!ENTITY rfc2104 PUBLIC ''
+   'http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.2104.xml'>
+<!ENTITY rfc2119 PUBLIC ''
+   'http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.2119.xml'>
+<!ENTITY rfc2782 PUBLIC ''
+   'http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.2782.xml'>
+<!ENTITY rfc4055 PUBLIC ''
+   'http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.4055.xml'>
+<!ENTITY rfc4075 PUBLIC ''
+   'http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.4075.xml'>
+<!ENTITY rfc4279 PUBLIC ''
+   'http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.4279.xml'>
+<!ENTITY rfc5246 PUBLIC ''
+   'http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.5246.xml'>
+<!ENTITY rfc5705 PUBLIC ''
+   'http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.5705.xml'>
+<!ENTITY rfc5246 PUBLIC ''
+   'http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.5246.xml'>
+<!ENTITY rfc6124 PUBLIC ''
+   'http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.6124.xml'>
+<!ENTITY rfc6151 PUBLIC ''
+   'http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.6151.xml'>
+<!ENTITY rfc6189 PUBLIC ''
+   'http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.6189.xml'>
+<!ENTITY rfc6762 PUBLIC ''
+   'http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.6762.xml'>
+<!ENTITY rfc6763 PUBLIC ''
+   'http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.6763.xml'>
+<!ENTITY rfc7296 PUBLIC ''
+   'http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.7296.xml'>
+<!ENTITY rfc7626 PUBLIC ''
+   'http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.7626.xml'>
+<!ENTITY rfc7844 PUBLIC ''
+   'http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.7844.xml'>
+<!ENTITY rfc7858 PUBLIC ''
+   'http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.7858.xml'>
+
+<!ENTITY I-D.ietf-dnssd-privacy PUBLIC ''
+   "http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-dnssd-privacy.xml">
+
+<!ENTITY I-D.ietf-intarea-hostname-practice PUBLIC ''
+   "http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-intarea-hostname-practice.xml">
+<!ENTITY I-D.ietf-dprive-dnsodtls PUBLIC ''
+   "http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-dprive-dnsodtls.xml">
+<!ENTITY I-D.ietf-tls-tls13 PUBLIC ''
+   "http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-tls-tls13.xml">
+<!ENTITY I-D.ietf-dnssd-push PUBLIC ''
+   "http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-dnssd-push">
+<!ENTITY I-D.miers-tls-sas PUBLIC ''
+   "http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.miers-tls-sas">
+
+
+<!ENTITY kw14a PUBLIC ''
+   "references/reference.kw14a.xml">
+<!ENTITY kw14b PUBLIC ''
+   "references/reference.kw14b.xml">
+]>
+
+<?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
+<?rfc compact="yes"?>
+<?rfc toc="yes"?>
+<?rfc symrefs="yes"?>
+<?rfc sortrefs="yes"?>
+
+<!-- Expand crefs and put them inline -->
+<?rfc comments='yes' ?>
+<?rfc inline='yes' ?>
+
+<rfc category="std"
+     docName="draft-ietf-dnssd-pairing-00.txt"
+     ipr="trust200902">
+
+<front>
+    <title abbrev="Device Pairing">
+      Device Pairing Using Short Authentication Strings
+    </title>
+
+   <author fullname="Christian Huitema" initials="C." surname="Huitema">
+      <organization></organization>
+      <address>
+        <postal>
+          <street> </street>
+          <city>Friday Harbor</city>
+          <code>98250</code>
+          <region>WA</region>
+          <country>U.S.A.</country>
+        </postal>
+        <email>huitema@huitema.net</email>
+      </address>
+    </author>
+
+   <author fullname="Daniel Kaiser" initials="D." surname="Kaiser">
+     <organization>University of Konstanz</organization>
+      <address>
+        <postal>
+          <street> </street>
+          <city>Konstanz</city>
+          <code>78457</code>
+          <region></region>
+          <country>Germany</country>
+        </postal>
+        <email>daniel.kaiser@uni-konstanz.de</email>
+      </address>
+    </author>
+
+    <date year="2016" />
+
+    <abstract>
+        <t>
+          This document proposes a device pairing mechanism that establishes a relationship between two devices by
+          agreeing on a secret and manually verifying the secret's authenticity using an SAS (short authentication string).
+          Pairing has to be performed only once per pair of devices, as for a re-discovery at any later point in time,
+          the exchanged secret can be used for mutual authentication.
+        </t>
+        <t>
+          The proposed pairing method is suited for each application area where human operated devices need to establish a
+          relation that allows configurationless and privacy preserving re-discovery at any later point in time.
+          Since privacy preserving applications are the main suitors, we especially care about privacy.
+        </t>
+    </abstract>
+</front>
+
+<middle>
+<section title="Introduction">
+  <t>
+  To engage in secure and privacy preserving communication, hosts need to differentiate
+  between authorized peers, which must both know about the host's presence and be able to decrypt messages sent by the host,
+  and other peers, which must not be able to decrypt the host's messages and ideally should  not be aware of the host's presence.
+  The necessary relationship between host and peer can be established by a centralized service, e.g. a certificate  authority,
+  by a web of trust, e.g. PGP, or -- without using global identities -- by device pairing.
+  </t>
+  
+  <t>
+    This document proposes a device pairing mechanism that provides human operated devices with pairwise authenticated secrets,
+    allowing mutual automatic re-discovery at any later point in time along with mutual private authentication.
+    We especially care about privacy and user-friendliness.
+  </t>
+
+  <t>
+    The proposed pairing mechanism consists of three steps needed to establish a relationship between a host and a peer:
+  </t>
+
+  <t>
+<list style="numbers">
+<t>
+   Discovery of the peer device. The host needs a means to discover network parameters necessary to establish a connection to the peer.
+   During this discovery process, neither the host nor the peer must disclose its presence.
+</t>
+<t>
+  Agreeing on pairing data. The devices have to agree on pairing data, which can be used by both parties at any later point in time to
+  generate identifiers for re-discovery and to prove the authenticity of the pairing.
+  The pairing data can e.g. be a shared secret agreed upon via a Diffie-Hellman key exchange.
+</t>
+<t>
+  Authenticate pairing data. Since in most cases the messages necessary to agree upon pairing data are send over an insecure channel, 
+  means that guarantee the authenticity of these messages are necessary;
+  otherwise the pairing data is in turn not suited as a means for a later proof of authenticity.
+  For the proposed pairing mechanism we use manual interaction involving an SAS 
+  (short authentication string) to proof the authenticity of the pairing data.
+</t>
+</list>
+</t>
+
+<section title="Requirements">
+<t>
+  The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+  "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
+  document are to be interpreted as described in <xref target="RFC2119" />.
+</t>
+</section>
+</section>
+
+
+<section title="Problem Statement and Requirements" anchor="problem" >
+<t>
+The general pairing requirement is easy to state: establish a trust relation between two entities in a 
+secure manner. But details matter, and in this section we explore the detailed requirements that guide
+our design.
+</t>
+
+<section title="Secure Pairing Over Internet Connections" anchor="securityReq" >
+<t>
+Many pairing protocols have already been developed, in particular for the
+pairing of devices over specific wireless networks. For example, the current Bluetooth 
+specifications include a pairing protocol that has evolved over several
+revisions towards better security and usability <xref target="BTLEPairing" />.
+The Wi-Fi Alliance defined the Wi-Fi Protected Setup process to ease the setup of 
+security-enabled Wi-Fi networks in home and small office environments 
+<xref target="WPS" />. Other wireless standards have defined or are defining similar
+protocols, tailored to specific technologies.
+</t>
+<t>
+This specification defines a pairing protocol that is independent of the underlying 
+technology. We simply make the hypothesis that the two parties engaged in the pairing
+can discover each other and then establish connections over IP in order to
+agree a shared secret.
+</t>
+<t>
+[[TODO: Should we support certificates besides a shared secret?]]
+</t>
+</section>
+
+<section title="Identity Assurance" anchor="verifyId">
+<t>
+The parties in the pairing must be able to identify each other. To put it simply, if Alice believes 
+that she is establishing a pairing with Bob, she must somehow ensure that the pairing is actually
+established with Bob, and not with some interloper like Eve or Nessie.
+Providing this assurance requires designing both the protocol and the user interface (UI) with care.
+</t>
+<t>
+Consider for example an attack in 
+which Eve tricks Alice into engaging in a pairing process while pretending to be Bob. Alice must be able 
+to discover that something is wrong, and refuse to establish the pairing.
+The parties engaged in the pairing must at least be able to verify their identities, respectively.
+</t>
+</section>
+
+<section title="Adequate User Interface" anchor="MITMUIReq" >
+<t>
+Because the pairing protocol is executed without prior knowledge, it is typically vulnerable to
+"Man-in-the-middle" attacks. While Alice is trying to establish a pairing with Bob, Eve positions 
+herself in the middle. Instead of getting a pairing between Alice and Bob, both Alice and Bob get
+paired with Eve. This requires specific features in the protocol to
+detect man-in-the-middle attacks, and if possible resist them. The reference <xref target="NR11" /> 
+analyzes the various proposals to solve this problem, and in this document, we present 
+a layman description of these issues in <xref target="MITMCryptoReq" />. The
+various protocols proposed in the literature impose diverse constraints on the UI
+interface, which we will review here.
+</t>
+
+<section title="Short PIN Proved Inadequate" >
+<t>
+The initial Bluetooth pairing protocol relied on a four digit PIN, displayed by one of the devices to be paired.
+The user would read that PIN and provide it to the other device.
+The PIN would then be used in a Password Authenticated Key Exchange.
+Wi-Fi Protected Setup <xref target="WPS" /> offered a similar option.
+There were various attacks against the actual protocol; some of the problems were caused by issues
+in the protocol, but most were tied to the usage of short PINs.
+</t>
+<t>
+In the reference implementation, the PIN is picked at random by the paired device before
+the beginning of the exchange. But this requires that the paired device is capable of
+generating and displaying a four digit number. It turns out that many devices cannot do
+that. For example, an audio headset does not have any display capability. These limited
+devices ended up using static PINs, with fixed values like "0000" or "0001".
+</t>
+<t>
+Even when the paired device could display a random PIN, that PIN will have to be copied
+by the user on the pairing device. It turns out that users do not like copying long
+series of numbers, and the usability thus dictated that the PINs be short -- four digits
+in practice. But there is only so much assurance as can be derived from a four digit key.
+</t>
+<t>
+It is interesting to note that the latest revisions of the Bluetooth Pairing protocol 
+<xref target="BTLEPairing" /> do not include the short PIN option anymore. The 
+PIN entry methods have been superseded by the simple "just works" method for devices
+without displays, and by a procedure based on an SAS (short authentication string) when
+displays are available.
+</t>
+
+<t>
+A further problem with these PIN based approaches is that -- in contrast to SASes --
+the PIN is a secret instrumental in the security algorithm.
+To guarantee security, this PIN had to be transmitted via a secure out of band channel.
+</t>
+
+</section>
+
+<section title="Push Buttons Just Work, But Are Insecure" >
+<t>
+Some devices are unable to input or display any code. The industry more or less
+converged on a "push button" solution. When the button is pushed, devices enter
+a "pairing" mode, during which they will accept a pairing request from whatever 
+other device connects to them.
+</t>
+<t>
+The Bluetooth Pairing protocol <xref target="BTLEPairing" /> denotes that as 
+the "just works" method. It does indeed work, and if the pairing succeeds
+the devices will later be able to use the pairing keys to authenticate connections.
+However, the procedure does not provide any protection against
+MITM attacks during the pairing process. The only protection is that pushing the
+button will only allow pairing for a limited time, thus limiting the
+opportunities of attacks.
+</t>
+<t>
+As we set up to define a pairing protocol with a broad set of applications,
+we cannot limit ourselves to an insecure "push button" method. But we probably
+need to allow for a mode of operation that works for input-limited
+and display limited devices.
+</t>
+</section>
+<section title="Short Range Communication" anchor="shortRange" >
+<t>
+There have been several attempts to define pairing protocols that use "secure
+channels." Most of them are based on short range communication systems,
+where the short range limits the feasibility for attackers to access the channels.
+Example of such limited systems include for example:
+</t>
+<t>
+<list style="symbols" >
+<t>
+QR codes, displayed on the screen of one device, and read by the camera of the other device.
+</t>
+<t>
+Near Field Communication (NFC) systems, which provides wireless communication with a very short range.
+</t>
+<t>
+Sound systems, in which one systems emits a sequence of sounds or ultrasounds that is picked by the microphone of the other system.
+</t>
+</list>
+</t>
+<t>
+A common problem with these solutions is that they require special capabilities that may not be present in every device. 
+Another problem is that they are often one-way channels. Yet another problem is that the side channel is not
+necessarily secret. QR codes could be read by third parties. Powerful radios antennas might be able to interfere with 
+NFC. Sensitive microphones might pick the sounds. We will discuss the specific case of QR codes in <xref target="QRDiscuss" />.
+</t>
+</section>
+
+<section title="Short Authentication Strings" >
+<t>
+The evolving pairing protocols seem to converge towards a "display and compare" method. 
+This is in line with academic studies, such as <xref target="KFR09" /> or <xref target="USK11" />.
+This points to a very simple scenario:
+</t>
+<t>
+<list style="numbers">
+<t>
+Alice initiates pairing
+</t>
+<t>
+Bob selects Alice's device from a list.
+</t>
+<t>
+Alice and Bob compare displayed strings that represent a fingerprint of the key.
+</t>
+<t>
+If the strings match, Alice and Bob accept the pairing.
+</t>
+</list>
+</t>
+<t>
+Most existing pairing protocols display the fingerprint of the key as a 6 or 7 digit
+numbers. Usability studies show that gives good results, with little risk that
+users mistakenly accept two different numbers as matching. However, the authors of 
+<xref target="USK11" /> found that people had more success comparing computer 
+generated sentences than comparing numbers. This is in line with the argument in
+<xref target="XKCD936" /> to use sequences of randomly chosen common words as passwords. 
+On the other hand, standardizing strings is more complicated than standardizing numbers.
+We would need to specify a list of common words, and the process to go from a binary 
+fingerprint to a set of words. We would need to be concerned with internationalization 
+issues, such as using different lists of words in German and in English. This could
+require negotiation of word lists or languages inside the pairing protocols. 
+</t>
+<t>
+In contrast, numbers are easy to specify, as in "take a 20 bit number and 
+display it as an integer using decimal notation."
+</t>
+
+</section>
+
+</section>
+
+<section title="Resist Cryptographic Attacks" anchor="MITMCryptoReq" >
+<t>
+It is tempting to believe that once two peers are connected, they could create
+a secret with a few simple steps, such as for example exchange two nonces, 
+hash the concatenation of these nonces with the shared secret that is about to be established, display
+a short authentication string composed of a short version of that hash 
+on each device, and verify that the two values match. The sequence
+of messages would be something like:
+</t>
+<t>
+<figure>
+<artwork>
+    Alice                       Bob
+    g^xA --&gt;
+                           &lt;-- g^xB
+    nA --&gt;
+                              &lt;-- nB
+    Computes              Computes
+    s = g^xAxB            s = g^xAxB
+    h = hash(s|nA|nB)     h = hash(s|nA|nB)
+    Displays short        Displays short
+    version of h          version of h
+</artwork>
+</figure>
+</t>
+<t>
+If the two short hashes match, Alice and Bob are supposedly assured that
+they have computed the same secret, but there is a problem.
+The exchange may not deter a smart attacker
+in the middle. Let's redraw the same message flow, this time involving Eve:
+</t>
+<t>
+<figure>
+<artwork>
+    Alice                Eve                Bob
+    g^xA --&gt;
+                         g^xA'--&gt;
+                                        &lt;-- g^xB
+                      &lt;--g^xB'
+    nA --&gt;
+                         nA --&gt; 
+                                          &lt;-- nB
+                       Picks nB'
+                       smartly
+                      &lt;--nB'
+    Computes                             Computes
+    s' = g^xAxB'                           s" = g^xA'xB
+    h' = hash(s|nA|nB')                    h" = hash(s"|nA|nB)
+    Displays short                       Displays short
+    version of h'                        version of h"
+</artwork>
+</figure>
+</t>
+<t>
+Let's now assume that to pick the nonce nB' smartly, Eve runs the following
+algorithm:
+</t>
+<t>
+<figure>
+<artwork>
+    s' = g^xAxB'
+    s" = g^xA'xB
+    repeat
+       pick a new version of nB'
+       h' = hash(s|nA|nB')
+       h" = hash(s"|nA|nB)
+    until the short version of h' 
+    matches the short version of h"
+</artwork>
+</figure>
+</t>
+<t>
+Of course, running this algorithm will require in theory as many iterations as
+the possible values of the short hash. But hash algorithms are fast, and it
+is possible to try millions of values in less than a second. If the short
+string is made up of fewer than 6 digits, Eve will find a matching nonce 
+quickly, and Alice and Bob will hardly notice the delay. Even if the 
+matching string is as long as 8 letters, Eve will probably find a value
+where the short versions of h' and h" are close enough, e.g. start and end
+with the same two or three letters. Alice and Bob may well be fooled.
+</t>
+<t>
+The classic solution to such problems is to "commit" a possible attacker to a nonce before sending it.
+This commitment can be realized by a hash.
+In the modified exchange, Alice sends a secure
+hash of her nonce before sending the actual value:
+</t>
+<t>
+<figure>
+<artwork>
+    Alice                       Bob
+    g^xA --&gt;
+                            &lt;-- g^xB
+
+    Computes              Computes
+    s = g^xAxB            s = g^xAxB
+    h_a = hash(s|nA) --&gt;
+                              &lt;-- nB
+    nA --&gt;
+                          verifies h_a == hash(s|nA)
+    Computes              Computes
+    h = hash(s|nA|nB)     h = hash(s|nA|nB)
+    Displays short        Displays short
+    version of h          version of h
+</artwork>
+</figure>
+</t>
+<t>
+Alice will only disclose nA after
+having confirmation from Bob that hash(nA) has been received.
+At that point, Eve has a problem. She can still forge the values of the nonces
+but she needs to pick the nonce nA' before the actual value of nA has been 
+disclosed.
+Eve would still have a random chance of fooling Alice and Bob, but it will be a very
+small chance: one in a million if the short authentication string is made of
+6 digits, even fewer if that string is longer. 
+</t>
+<t>
+Nguyen et al. <xref target="NR11" /> survey these protocols and compare them with respect to the amount of necessary user interaction and
+  the computation time needed on the devices.
+  The authors state that such a protocol is optimal with respect to user interaction if it suffices for users to verify a single b-bit SAS
+  while having a one-shot attack success probability of 2^-b.
+  Further, n consecutive attacks on the protocol must not have a better success probability then n one-shot attacks.
+</t>
+<t>
+There is still a theoretical problem, if Eve has somehow managed to 
+"crack" the hash function. We build some "defense in depth" by 
+some simple measures. In the design presented above, the hash "h_a"
+depends on the shared secret "s", which acts as a "salt" and reduces
+the effectiveness of potential attacks based on pre-computed 
+catalogs. For simplicity, the design used a simple concatenation 
+mechanism, but we could instead use a keyed-hash message authentication 
+code (HMAC, <xref target="RFC2104"/>, <xref target="RFC6151"/>), using 
+the shared secret as a key, since the HMAC construct has
+proven very robust over time. Then, we can constrain the size of
+the random numbers to be exactly the same as the output of the hash 
+function. Hash attacks often require padding the input string with
+arbitrary data; restraining the size limits the likelyhood of such 
+padding.
+</t>
+</section>
+
+<section title="Privacy Requirements" >
+<t>
+Pairing exposes a relation between several devices and their owners. Adversaries may
+attempt to collect this information, for example in an attempt to track 
+devices, their owners, or their "social graph." It is often argued that
+pairing could be performed in a safe place, from which adversaries are assumed 
+absent, but experience shows that such assumptions are often misguided.
+It is much safer to acknowledge the privacy issues and design the pairing
+process accordingly.
+</t>
+<t>
+In order to start the pairing process, devices must first discover each other.
+We do not have the option of
+using the private discovery protocol <xref target="I-D.huitema-dnssd-privacy" /> 
+since the privacy of that protocol depends on the pre-existing pairing. 
+In the simplest design, 
+one of the devices will announce a "friendly name" using DNS-SD. 
+Adversaries could monitor the discovery protocol, and record that name.
+An alternative would be for one device to announce a random name, and communicate
+it to the other device via some private channel. There is an obvious
+tradeoff here: friendly names are easier to use but less private than
+random names. We anticipate that different users will choose different
+tradeoffs, for example using friendly names if they assume that
+the environment is "safe," and using random names in public places.
+</t>
+<t>
+During the pairing process, the two devices establish a connection
+and validate a pairing secret. As discussed in <xref target="MITMUIReq" />,
+we have to assume that adversaries can mount MITM attacks. The pairing 
+protocol can detect such attacks and resist them, but the attackers will
+have access to all messages exchanged before validation
+is performed. It is important to not exchange any privacy sensitive information
+before that validation. This includes, for example, the identities of the
+parties or their public keys.
+</t>
+
+</section>
+
+<section title="Using TLS" >
+<t>
+The pairing algorithms typically combine the establishment of a shared
+secret through an [EC]DH exchange with the verification of that secret
+through displaying and comparison of a "short authentication string" (SAS).
+As explained in <xref target="MITMCryptoReq" />, the
+secure comparison requires a "commit before disclose" mechanism.
+</t>
+<t>
+We have three possible designs: (1) create a pairing algorithm from scratch,
+specifying our own crypto exchanges; (2) use an [EC]DH version of TLS to
+negotiate a shared secret, export the key to the application as specified 
+in <xref target="RFC5705" />, and implement
+the "commit before disclose" and SAS verification as part of the pairing
+application; or, (3) use TLS, integrate the "commit before disclose" and SAS
+verification as TLS extensions, and export the verified key to the
+application as specified 
+in <xref target="RFC5705" />.
+</t>
+<t>
+When faced with the same choice, the designers of ZRTP <xref target="RFC6189" />
+chose to design a new protocol integrated in the general framework of real
+time communications. We don't want to follow that path, and would rather not
+create yet another protocol. We would need to
+reinvent a lot of the negotiation capabilities that are part of TLS, not
+to mention algorithm agility, post quantum, and all that sort of things. 
+It is thus pretty clear that we should use TLS.
+</t>
+<t>
+It turns out that there was already an attempt to define 
+SAS extensions for TLS (<xref target="I-D.miers-tls-sas" />). 
+It is a very close match
+to our third design option, full integration of SAS in TLS,
+but the draft has expired, and there does not seem to be
+any support for the SAS options in the common TLS packages.
+</t>
+<t>
+In our design, we will choose the middle ground option -- use TLS for
+[EC]DH,
+and implement the SAS verification as part of the pairing application.
+This minimizes dependencies on TLS packages to the availability
+of a key export API following <xref target="RFC5705" />.
+We will need to specify the hash algorithm used for the SAS
+computation and validation, which carries some of the issues
+associated with "designing our own crypto". One
+solution would be to use the same hash algorithm negotiated by
+the TLS connection, but common TLS packages do not not always 
+make this algorithm identifier available
+through standard APIs. A fallback solution is to
+specify a state of the art keyed MAC algorithm.
+</t>
+</section>
+
+<section title="QR codes" anchor="QRDiscuss" >
+<t>
+In <xref target="shortRange" />, we reviewed a number of short range 
+communication systems that can be used to facilitate pairing. Out of these,
+QR codes stand aside because most devices that can display a short
+string can also display the image of a QR code, and because many
+pairing scenarios involve cell phones equipped with cameras capable of
+reading a QR code.
+</t>
+<t>
+QR codes could be particularly useful when starting discovery. QR codes can
+encode an alphanumeric string, which could for example encode the
+selected name of the pairing service.
+This would enable automatic discovery, and would be easier to use than reading
+the random name of the day and matching it against the results of DNS-SD.
+</t>
+<t>
+In addition to the instance name, a QR code could also be leveraged for authentication.
+It could encode an SAS or even a longer authentication string. Transmitting the output of a
+cryptographic hash function or HMAC via the OOB channel would make an offline combinatorial search attack infeasible
+and thus allow to not sent the commitment discussed in <xref target="MITMCryptoReq" /> saving a message.
+Further, if a single device created both QR codes for discovery and verifcation, respecitvely,
+and the other device scans these, the users could just wait while both QRs are scanned subsequently as
+no user interaction is necessary between these two scans (but it needs a QR scanner (app) that support this). 
+This could make the process feel like a single user interaction.
+</t>
+<t>
+But still, from a users point of view, scanning QR codes
+may not be more efficient than visual verification of a short string.
+The user has to take a picture of the QR code, which is arguably not 
+simpler than just "look at the number on the screen and tell me whether it is 
+the same as yours".
+</t>
+<t>
+In the case of a man-in-the-middle attack, the evaluation of the QR code will fail. 
+The "client" that took the picture will know that, but the "server" will not. The 
+user will still need to click some "Cancel" button on the server, which means that
+the process will not be completely automated.
+</t>
+
+</section>
+
+</section> <!-- end of problem statement -->
+
+<section title="Design of the Pairing Mechanism" anchor="design" >
+
+<t>
+In this section we discuss the design of pairing protocols that use manually 
+verified short authentication strings (SAS), considering both security and user experience.
+</t>
+
+<t>
+ We divide pairing in three parts: discovery, agreement, and authentication, detailed in the following subsections.
+</t>
+
+<section title="Discovery">
+<t>
+The goal of the discovery phase is establishing a connection, which is later used to
+exchange the pairing data, between the two devices that are about to be paired
+in an IP network without any a priori knowledge and without publishing any private information.
+In accordance with TLS, we refer to the device initiating the cryptographic protocol as client,
+and to the other device as server; the server has to be discoverable by the client.
+</t>
+<t>
+Granting privacy during the discovery phase without relying on a priori knowledge demands another user interaction (besides
+the SAS verification during the authentication phase).
+There are two possible ways of realizing this user interaction depending on whether QR codes are supported or not.
+If QR codes are supported, the discovery process can be independent of DNS-SD, because 
+QR codes allow the transmission of a sufficient amount of data.
+Leveraging QR codes, the discovery proceeds as follows.
+</t>
+<t>
+<list style="numbers">
+<t>
+  The server displays a QR code containing the clients A and AAAA resource records,
+  and further the SRV resource record corresponding to the pairing service instance. A privacy preserving instance name is not
+  necessary, because this instance is never published via an unsecured network.
+</t>
+<t>
+The client scans the QR code retrieving the necessary information for establishing a connection to the server.
+</t>
+</list>
+</t>
+<t>
+If QR codes are not supported, the discovery proceeds as follows.
+</t>
+<t>
+<list style="numbers">
+<t>
+The server displays its chosen instance name on its screen.  
+</t>
+<t>
+The client performs a discovery of all the "pairing" servers
+available on the local network. This may result in the discovery
+of several servers.
+</t>
+<t>
+Among these available "pairing servers" the client user 
+selects the name that matches the name displayed by the server.
+</t>
+</list>
+</t>
+</section>
+
+<section title="Agreement">
+<t>
+Once the server has been selected, the client connects to it without further user intervention.
+Client and server use this connection for exchanging data that allows them to agree on a shared secret
+by using a cryptographic protocol that yields an SAS. We discussed design aspects of such protocols in <xref target="MITMCryptoReq" />.
+</t>
+</section>
+
+<section title="Authentication">
+<t>
+In the authentication phase, the users are asked to validate the pairing by comparing the SASes -- typically represented by a number encoded over up to 7 decimal digits.
+If the SASes match, each user enters an agreement, for example by pressing a button labeled "OK", which results in the pairing being remembered.
+If they do not match, each user should cancel the pairing, for example by pressing a button labeled "CANCEL". 
+</t>
+
+<t>
+Depending on whether QR codes are supported, the SAS may also be represented as QR code.
+Despite the fact that using QR codes to represent the authentication string renders using longer authentication strings feasible,
+we suggest to always generate an SAS during the agreement phase, because this makes realizations of the agreement phase and the authentication phase independent.
+Devices may display the "real" name of the other device alongside the SAS.
+</t>
+
+</section>
+
+
+<section title="Intra User Pairing">
+  <t>
+  Users can pair their own devices in secure (home) networks without any interaction using a special DNS-SD pairing service.
+  Verification methods where a  single user holds both devices, e.g. synchronously pressing buttons on both devices a few times, are also suitable.
+  Further, a secure OOB could be established by connecting two devices with an USB channel.
+  Pairing via an USB connection is also used by some Bluetooth devices, e.g. when pairing a controller with a gaming console.
+  </t>
+  <t>
+    [[TODO: elaborate]]
+  </t>
+
+</section>
+
+<section title="Pairing Data Synchronization">
+  <t>
+    To make it sufficient for users to pair only one of their devices to one of their friends devices while still
+    being able to engage in later communication with all of this friend's devices using any of the own devices,
+    we offer the possibility to synchronize pairing data among devices of the same user.
+    Pairing data synchronization is performed via a special DNS-SD service (_pdsync._tls).
+  </t>
+  <t>
+    [[TODO: elaborate]]
+  </t>
+</section>
+
+
+
+
+<section title="Public Authentication Keys">
+  <t>
+    [[TODO: Should we discuss public authentication keys whose fingerprints are verified during pairing?]]
+</t>
+</section>
+
+</section>
+
+
+<section title="Solution" anchor="solution" >
+
+  <t>
+    [[TODO: elaborate on all subsections]]
+  </t>
+
+<t>
+In the proposed pairing protocol, one of the devices acts as a "server", and the other acts as a "client". 
+The server will publish a "pairing service". The client will discover the service instance during the
+discovery phase, as explained in <xref target="discoverSpec"/>. The pairing service itself is specified 
+in <xref target="serviceSpec" />.
+
+</t>
+
+<section title="Discovery" anchor="discoverSpec" >
+<t>
+The discovery uses DNS-SD <xref target="RFC6763" /> over mDNS <xref target="RFC6762" />.
+The pairing service is identified in DNS SD as "_pairing._tcp".
+When the pairing service starts, the server starts publishing the chosen instance name.
+The client will discover that name and the corresponding connection parameters.
+</t>
+<t>
+If QR code scanning is available as OOB channel, the discovery data is
+directly transmitted via QR codes instead of DNS-SD over mDNS.
+[[TODO: We should precisely specify the data layout of this QR code.
+It could either be the wire format of the corresponding resource records (which would be easier for us),
+or a more efficient representation. If we chose the wire format, we could use a fix name as instance name.]]
+</t>
+</section>
+
+<section title="Agreement and Authentication" anchor="serviceSpec">
+<t>
+The pairing protocol is built using TLS. The following description uses the
+presentation language defined in section 4 of <xref target="RFC5246" />.
+The protocol uses five message types, defined in the following enum:
+</t>
+<t>
+<figure>
+<artwork>
+enum {
+   ClientHash(1),
+   ServerRandom(2),
+   ClientRandom(3),
+   ServerSuccess(4),
+   ClientSuccess(5)
+} PairingMessageType;
+</artwork>
+</figure>
+</t>
+<t>
+Devices implementing the service MUST 
+support TLS 1.2 <xref target="RFC5246" />, and SHOULD support TLS 1.3 as soon as 
+it becomes available.
+When using TLS, the client and server MUST negotiate a ciphersuite
+providing forward secrecy (PFS), and strong encryption (256 bits symmetric 
+key). All implementations using TLS 1.2 SHOULD be able to negotiate
+the cipher suite TLS_DH_anon_WITH_AES_256_CBC_SHA256.
+</t>
+<t>
+Once the TLS connection has been established, each party extracts the pairing secret 
+S_p from the connection context per <xref target="RFC5705" />, using the following 
+parameters:
+</t>
+<t>
+<list style="hanging" hangIndent="6">
+<t hangText="Disambiguating label string:" >
+"PAIRING SECRET"
+</t>
+<t hangText="Context value:" >
+empty.
+</t>
+<t hangText="Length value:">
+32 bytes (256 bits).
+</t>
+</list>
+</t>
+<t>
+Once S_p has been obtained, the client picks a random number R_c, exactly 32 bytes 
+long. The client then selects a hash algorithm, which SHOULD be the same algorithm as 
+negotiated for building the PRF in the TLS connection. If there is no suitable API to 
+retrieve that algorithm, the client MAY use SHA256 instead. The client then computes 
+the hash value H_c as:
+</t>
+<t>
+<list>
+<t>
+H_c = HMAC_hash(S_p, R_c)
+</t>
+<t>
+Where "HMAC_hash" is the HMAC function constructed with the selected algorithm.
+</t>
+</list>
+</t>
+<t>
+The client transmits the selected hash function and the computed value of H_c 
+in the Client Hash message, over the TLS connection:
+</t>
+<t>
+<figure>
+<artwork>
+struct {
+   PairingMessageType messageType;
+   hashAlgorithm hash;
+   uint8 hashLength;
+   opaque H_c[hashLength];
+} ClientHashMessage;
+</artwork>
+</figure>
+</t>
+<t>
+<list style="hanging" hangIndent="6">
+<t hangText="messageType" >
+Set to "ClientHash".
+</t>
+<t hangText="hash" >
+The code of the selected hash algorithm, per definition of HashAlgorithm in section 7.4.1.1.1 of <xref target="RFC5246" />.
+</t>
+<t hangText="hashLength" >
+The length of the hash H_c, which MUST be consistent with the selected algorithm "hash".
+</t>
+<t hangText="H_c" >
+The value of the client hash.
+</t>
+</list>
+</t>
+<t>
+Upon reception of this message, the server stores its value. The server picks a random number R_s,
+exactly 32 bytes long, and transmits it to the client in the server random message, over the TLS connection:
+</t>
+<t>
+<figure>
+<artwork>
+struct {
+   PairingMessageType messageType;
+   opaque R_s[32];
+} ServerRandomMessage;
+</artwork>
+</figure>
+</t>
+<t>
+<list style="hanging" hangIndent="6">
+<t hangText="messageType" >
+Set to "ServerRandom".
+</t>
+<t hangText="R_s" >
+The value of the random number chosen by the server.
+</t>
+</list>
+</t>
+<t>
+Upon reception of this message, the client discloses its own random
+number by transmitting the client random message:
+</t>
+<t>
+<figure>
+<artwork>
+struct {
+   PairingMessageType messageType;
+   opaque R_c[32];
+} ClientRandomMessage;
+</artwork>
+</figure>
+</t>
+<t>
+<list style="hanging" hangIndent="6">
+<t hangText="messageType" >
+Set to "ClientRandom".
+</t>
+<t hangText="R_c" >
+The value of the random number chosen by the client.
+</t>
+</list>
+</t>
+<t>
+Upon reception of this message, the server verifies that the 
+number R_c hashes to the previously received value H_c. If
+the number does not match, the server MUST abandon the pairing
+attempt and abort the TLS connection.
+</t>
+<t>
+At this stage, both client and server can compute the short
+hash SAS as:
+</t>
+<t>
+<list>
+<t>
+SAS = first 20 bits of HMAC_hash(S_p, R_c + R_s)
+</t>
+<t>
+Where "HMAC_hash" is the HMAC function constructed with the hash
+algorithm selected by the client in the ClientHashMessage.
+</t>
+</list>
+</t>
+<t>
+Both client and server display the SAS as a decimal integer,
+and ask the user to compare the values. If the values do not match, the user
+cancels the pairing. Otherwise, the protocol continues with the
+exchange of names, both server and client announcing their own preferred
+name in a Success message
+</t>
+<t>
+<figure>
+<artwork>
+struct {
+   PairingMessageType messageType;
+   uint8 nameLength;
+   opaque name[nameLength];
+} ClientSuccessMessage;
+</artwork>
+</figure>
+</t>
+<t>
+<list style="hanging" hangIndent="6">
+<t hangText="messageType" >
+Set to "ClientSuccess" if transmitted by the client, "ServerSuccess" if by the server.
+</t>
+<t hangText="nameLength" >
+The length of the string encoding the selected name.
+</t>
+<t hangText="name" >
+The selected name of the client or the server, encoded as a string of UTF8 characters.
+</t>
+</list>
+</t>
+<t>
+After receiving these messages, client and servers can orderly close the TLS connection, 
+terminating the pairing exchange.
+</t>
+</section>
+
+
+
+</section>
+
+<section title="Security Considerations">
+<t>
+We need to consider two types of attacks against a pairing 
+system: attacks that occur during the establishment of the 
+pairing relation, and attacks that occur after that 
+establishment.
+</t>
+
+<t>
+During the establishment of the pairing system, we are
+concerned with privacy attacks and with MITM attacks. Privacy attacks
+reveal the existence of a pairing between two devices, which can be used 
+to track graphs of relations. MITM attacks result in compromised pairing
+keys. The
+discovery procedures specified in <xref target="discoverSpec" /> 
+and the authentication procedures specified in 
+<xref target="serviceSpec" /> are specifically designed to
+mitigate such attacks.
+</t>
+
+<t>
+The establishment of the pairing results in the creation of a shared
+secret. After the establishment of the pairing relation,
+attackers who compromise one of the devices could access the shared
+secret. This will enable them to either track or spoof the devices. 
+To mitigate such attacks, nodes MUST store the secret safely,
+and MUST be able to quickly revoke
+a compromised pairing. This is however not sufficient, as the
+compromise of the pairing key could remain undetected for
+a long time. For further safety, nodes SHOULD assign a time limit
+to the validity of pairings, discard the corresponding keys when
+the time has passed, and establish new pairings.
+</t>
+
+</section>
+
+
+<section title="IANA Considerations" anchor="iana">
+<t>
+This draft does not require any IANA action.
+</t>
+</section>
+
+<section title="Acknowledgments">
+    <t>
+      TODO
+    </t>
+</section>
+</middle>
+
+<back>
+<references title="Normative References">
+       &rfc2119;
+       &rfc5246;
+       &rfc5705;
+       &rfc6763;
+       &rfc6762;
+</references>
+<references title="Informative References">
+       &rfc2104;
+       &rfc6151;
+       &rfc6189;
+       &I-D.huitema-dnssd-privacy;
+       &I-D.miers-tls-sas;
+
+<reference anchor="NR11" target="">
+  <front>
+    <title>Authentication protocols based on low-bandwidth unspoofable channels: a comparative survey</title>
+    <author initials="L." surname="Nguyen" fullname="Long Hoang Nguyen">
+      <organization/>
+    </author>
+    <author initials="A." surname="Roscoe" fullname="Andrew William Roscoe">
+      <organization/>
+    </author>
+    <date year="2011"/>
+  </front>
+</reference>
+
+<reference anchor="KFR09" target="">
+  <front>
+    <title>Authentication protocols based on low-bandwidth unspoofable channels: a comparative survey</title>
+    <author initials="R." surname="Kainda" fullname="Ronald Kainda">
+      <organization/>
+    </author>
+    <author initials="I." surname="Flechais" fullname="Ivan Flechais">
+      <organization/>
+    </author>
+    <author initials="A." surname="Roscoe" fullname="Andrew William Roscoe">
+      <organization/>
+    </author>
+    <date year="2009"/>
+  </front>
+</reference>
+
+<reference anchor="USK11" target="">
+  <front>
+    <title>. Pairing devices for social interactions: a comparative usability evaluation </title>
+    <author initials="E." surname="Uzun" fullname="Ersin Uzun">
+      <organization/>
+    </author>
+    <author initials="N." surname="Saxena" fullname="Nitesh Saxena">
+      <organization/>
+    </author>
+    <author initials="A." surname="Kumar" fullname="Arun Kumar">
+      <organization/>
+    </author>
+    <date year="2009"/>
+  </front>
+</reference>
+
+
+<reference anchor="XKCD936" target="https://www.xkcd.com/936/" >
+   <front>
+    <title>XKCD: Password Strength</title>
+    <author initials="R." surname="Munroe" fullname="Randall Munroe">
+      <organization/>
+    </author>
+    <date year="2011"/>
+  </front>
+</reference>
+
+<reference anchor="BTLEPairing" target="https://developer.bluetooth.org/TechnologyOverview/Pages/LE-Security.aspx">
+  <front>
+    <title>Bluetooth Low Energy Security Overview</title>
+    <author>
+      <organization>Bluetooth SIG</organization>
+    </author>
+    <date year="2016"/>
+  </front>
+</reference>
+
+<reference anchor="WPS" target="http://www.wi-fi.org/discover-wi-fi/wi-fi-protected-setup">
+  <front>
+    <title>Wi-Fi Protected Setup</title>
+    <author>
+      <organization>Wi-Fi Alliance</organization>
+    </author>
+    <date year="2016"/>
+  </front>
+</reference>
+</references>
+
+</back>
+</rfc>
