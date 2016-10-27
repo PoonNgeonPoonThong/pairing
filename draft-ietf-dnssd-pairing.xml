@@ -528,7 +528,7 @@ process accordingly.
 <t>
 In order to start the pairing process, devices must first discover each other.
 We do not have the option of
-using the private discovery protocol <xref target="I-D.huitema-dnssd-privacy" /> 
+using the private discovery protocol <xref target="I-D.ietf-dnssd-privacy" /> 
 since the privacy of that protocol depends on the pre-existing pairing. 
 In the simplest design, 
 one of the devices will announce a "friendly name" using DNS-SD. 
@@ -1069,7 +1069,7 @@ This draft does not require any IANA action.
        &rfc2104;
        &rfc6151;
        &rfc6189;
-       &I-D.huitema-dnssd-privacy;
+       &I-D.ietf-dnssd-privacy;
        &I-D.miers-tls-sas;
 
 <reference anchor="NR11" target="">
