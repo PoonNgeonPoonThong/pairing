@@ -79,7 +79,7 @@
 <?rfc inline='yes' ?>
 
 <rfc category="std"
-     docName="draft-ietf-dnssd-pairing-00.txt"
+     docName="draft-ietf-dnssd-pairing-01.txt"
      ipr="trust200902">
 
 <front>
@@ -115,7 +115,7 @@
       </address>
     </author>
 
-    <date year="2016" />
+    <date year="2017" />
 
     <abstract>
         <t>
@@ -133,7 +133,7 @@
 </front>
 
 <middle>
-<section title="Introduction">
+<section title="Introduction" anchor="intro">
   <t>
   To engage in secure and privacy preserving communication, hosts need to differentiate
   between authorized peers, which must both know about the host's presence and be able to decrypt messages sent by the host,
@@ -155,7 +155,7 @@
   <t>
 <list style="numbers">
 <t>
-   Discovery of the peer device. The host needs a means to discover network parameters necessary to establish a connection to the peer.
+   Discovering the peer device. The host needs a means to discover network parameters necessary to establish a connection to the peer.
    During this discovery process, neither the host nor the peer must disclose its presence.
 </t>
 <t>
@@ -164,7 +164,7 @@
   The pairing data can e.g. be a shared secret agreed upon via a Diffie-Hellman key exchange.
 </t>
 <t>
-  Authenticate pairing data. Since in most cases the messages necessary to agree upon pairing data are send over an insecure channel, 
+  Authenticating pairing data. Since in most cases the messages necessary to agree upon pairing data are send over an insecure channel, 
   means that guarantee the authenticity of these messages are necessary;
   otherwise the pairing data is in turn not suited as a means for a later proof of authenticity.
   For the proposed pairing mechanism we use manual interaction involving an SAS 
@@ -172,7 +172,6 @@
 </t>
 </list>
 </t>
-
 <section title="Requirements">
 <t>
   The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
@@ -180,7 +179,24 @@
   document are to be interpreted as described in <xref target="RFC2119" />.
 </t>
 </section>
+
+<section title="Document organization" >
+<t>
+NOTE TO RFC EDITOR: remove or rewrite this section before publication.
+</t>
+<t>
+This document is organized in two parts. The first part, composed of <xref target="intro"/>,
+<xref target="problem"/>, and <xref target="design"/> presents the pairing need, the list of requirements that shall be met, and the general design of the solution. This first part is informational in nature. The second part, composed of <xref target="solution"/> and <xref target="securityCons" />, is the actual specification of the protocol. 
+</t>
+<t>
+In his early review, Steve Kent observed that the style of the first part seems inappropriate for a standards track document,
+and suggested that the two parts be split into two documents, the first part becoming an 
+informational document, and the second focusing on standard track specification of the protocol, making reference to the informational document as appropriate. We, the authors, will seek working
+group approval before performing this split.
+</t>
 </section>
+
+</section> <!-- end of introduction -->
 
 
 <section title="Problem Statement and Requirements" anchor="problem" >
@@ -616,36 +632,126 @@ pairing scenarios involve cell phones equipped with cameras capable of
 reading a QR code.
 </t>
 <t>
-QR codes could be particularly useful when starting discovery. QR codes can
-encode an alphanumeric string, which could for example encode the
-selected name of the pairing service.
-This would enable automatic discovery, and would be easier to use than reading
-the random name of the day and matching it against the results of DNS-SD.
+QR codes are displayed as images. An adversary equipped with powerful cameras 
+could read the QR code just as well as the pairing parties. If the pairing
+protocol design embedded passwords or pins in the QR code, adversaries could
+access these data and compromise the protocol. On the other hand, there are ways
+to use QR code even without assuming secrecy.
 </t>
 <t>
-In addition to the instance name, a QR code could also be leveraged for authentication.
-It could encode an SAS or even a longer authentication string. Transmitting the output of a
-cryptographic hash function or HMAC via the OOB channel would make an offline combinatorial search attack infeasible
-and thus allow to not sent the commitment discussed in <xref target="MITMCryptoReq" /> saving a message.
-Further, if a single device created both QR codes for discovery and verifcation, respecitvely,
-and the other device scans these, the users could just wait while both QRs are scanned subsequently as
-no user interaction is necessary between these two scans (but it needs a QR scanner (app) that support this). 
-This could make the process feel like a single user interaction.
+QR codes could be used at two of the three stages of pairing: Discovering the peer device, and authenticating the shared secret. The choice to use QR code in the discovery phase, in the 
+agreement phase, or in bothphases depends on usability and security considerations:
 </t>
 <t>
-But still, from a users point of view, scanning QR codes
-may not be more efficient than visual verification of a short string.
-The user has to take a picture of the QR code, which is arguably not 
-simpler than just "look at the number on the screen and tell me whether it is 
-the same as yours".
+<list style="symbols" >
+<t>
+Typical network based discovery involves interaction with two devices. The device to be discovered
+is placed in "server" mode, and waits for requests from the network. The device performing the
+discovery retrieves from the network a list of candidates. When there are more than one such candidates, the device user is expected to select the expected target from a list. In QR code mode, the discovered device will display a QR code, which the user will scan using the second device. The QR code will embed the device's name, its IP address, and the port number of the pairing service. The connection will be automatic, without relying on the network discovery.
+This is arguably less error-prone and safer than selecting from a network provided list.
 </t>
 <t>
-In the case of a man-in-the-middle attack, the evaluation of the QR code will fail. 
-The "client" that took the picture will know that, but the "server" will not. The 
-user will still need to click some "Cancel" button on the server, which means that
-the process will not be completely automated.
+SAS based agreement involves displaying a short string on each device's display, and asking the
+user to verify that both devices display the same string. In QR code mode, one device could display a QR code containing some form of proof, for example a long hash of the shared secret and the nonces. Because the hash is longer, the resistance to MITM attack is better than using a simple nonce. Also, because the procedure is automated, there is no dependency on the user diligence at comparing the short strings. No further user interaction is a device that has 
+scanned and verified the QR code, but some form of manual confirmation is still required on 
+the "server" device.
+</t>
+</list>
+</t>
+<t>
+Use of QR code in either the discovery or the agreement phase makes sense, but use in both 
+phases seems cumbersome. The ideal interaction would involve scanning just one code, and 
+pushing a confirmation on the server if everything looks fine. This could be achieved if the
+initial QR code, used in the discovery phase, contained enough information to automate the
+agreement phase. Given the "non secret" nature of the QR code scanning, this 
+additional information has to be a 
+public key, or the hash of a public key. This will require a modification of the protocol:
+</t>
+<t>
+<figure>
+<artwork>
+    Alice                       Bob
+                          Display QR code
+    Scans QR code 
+
+    g^xA --&gt;
+                            &lt;-- g^xB
+
+    Computes              Computes
+    s = g^xAxB            s = g^xAxB
+    h_a = hash(s|nA) --&gt;
+                              &lt;-- nB
+    nA --&gt;
+                          verifies h_a == hash(s|nA)
+    Computes              Computes
+    h = hash(s|nA|nB)     h = hash(s|nA|nB)
+    [Displays short       [Displays short
+    version of h]         version of h]
+
+    indicates QR 
+    code scanned --&gt
+                          Computes proof
+                          with h and public key
+                              &lt;-- proof
+    Automatically
+    accepts pairing if
+    proof is verified
+                          Validates the pairing
+                          if client was successful.
+    
+</artwork>
+</figure>
+</t>
+<t>
+With these modifications, the only user interaction can be the scanning
+of the QR code. The protocol will be compatible with the "SAS based" 
+variant, but at some point the client (Alice) indicates to the server
+(Bob) that it is willing to perform automatic verification. The server 
+then sends a proof of that it knows the complete hash "h", and that it 
+owns the stated public key. If the client validates the proof, the server 
+validates the pairing.
+<t>
+This "one shot version" of the pairing exchange is tempting, but 
+the specification of the public key, its hash,
+and the construction of the proof clearly requires more work, if only to guarantee
+that the streamlined exchange resists to MITM attacks.
+If this version is developed developed, it would
+bypass the need of scanning QR code in the agreement phase. Assuming
+that it will be developed eventually, it makes sense to concentrate
+first on the optional use of QR code during the discovery phase.
 </t>
 
+</section>
+
+<section title="Intra User Pairing and Transitive Pairing">
+<t>
+There are two usage modes for pairing: inter-users, and intra-user. Users have multiple devices.
+The simplest design is to not distinguish between pairing devices belonging to two users,
+e.g., Alice's phone and Bob's phone, and devices belonging to the same user, e.g., Alice's 
+phone and her laptop. This will most certainly work, but it raises the problem of
+transitivity. If Bob needs to interact with Alice, should he install just one pairing for 
+"Alice and Bob", or should he install four pairings between Alice phone and laptop and Bob phone and laptop? Also, what happens if Alice gets a new phone?
+</t>
+<t>
+One tempting response is to devise a synchronization mechanism that will let
+devices belonging to the same user share their pairings with other users. But
+it is fairly obvious that such service will have to be designed cautiously. The
+pairing system relies on shared secrets. It is much easier to understand how
+to manage secrets shared between exactly two parties than secrets shared with
+an unspecified set of devices.
+</t>
+<t>
+Transitive pairing raises similar issues. Suppose that a group of users want to collaborate. 
+Will they need to set up a fully connected graph of pairings using the simple peer-to-peer
+mechanism, or could they use some transitive set, so that if Alice is connected with Bob and 
+Bob with Carol, Alice automatically gets connected with Carol? Such transitive mechanisms
+could be designed, e.g. using a variation of Needham-Scroeder symmetric key protocol <xref target="NS1978" />, but it will require some extensive work. Groups can of course use simpler 
+solution, e.g., build some star topology.
+</t>
+<t>
+Given the time required, intra-user pairing synchronization mechanisms and transitive pairing
+mechanisms are left for further study.
+</t>
 </section>
 
 </section> <!-- end of problem statement -->
@@ -734,50 +840,16 @@ Devices may display the "real" name of the other device alongside the SAS.
 
 </section>
 
-
-<section title="Intra User Pairing">
-  <t>
-  Users can pair their own devices in secure (home) networks without any interaction using a special DNS-SD pairing service.
-  Verification methods where a  single user holds both devices, e.g. synchronously pressing buttons on both devices a few times, are also suitable.
-  Further, a secure OOB could be established by connecting two devices with an USB channel.
-  Pairing via an USB connection is also used by some Bluetooth devices, e.g. when pairing a controller with a gaming console.
-  </t>
-  <t>
-    [[TODO: elaborate]]
-  </t>
-
-</section>
-
-<section title="Pairing Data Synchronization">
-  <t>
-    To make it sufficient for users to pair only one of their devices to one of their friends devices while still
-    being able to engage in later communication with all of this friend's devices using any of the own devices,
-    we offer the possibility to synchronize pairing data among devices of the same user.
-    Pairing data synchronization is performed via a special DNS-SD service (_pdsync._tls).
-  </t>
-  <t>
-    [[TODO: elaborate]]
-  </t>
-</section>
-
-
-
-
 <section title="Public Authentication Keys">
   <t>
     [[TODO: Should we discuss public authentication keys whose fingerprints are verified during pairing?]]
 </t>
 </section>
 
-</section>
+</section> <!-- end of design -->
 
 
 <section title="Solution" anchor="solution" >
-
-  <t>
-    [[TODO: elaborate on all subsections]]
-  </t>
-
 <t>
 In the proposed pairing protocol, one of the devices acts as a "server", and the other acts as a "client". 
 The server will publish a "pairing service". The client will discover the service instance during the
@@ -795,7 +867,13 @@ The client will discover that name and the corresponding connection parameters.
 </t>
 <t>
 If QR code scanning is available as OOB channel, the discovery data is
-directly transmitted via QR codes instead of DNS-SD over mDNS.
+directly transmitted via QR codes instead of DNS-SD over mDNS. The QR data contains
+connection data otherwise found in the SRV and A or AAAA records: 
+IPv4 or IPv6 address, port number, and optionally host name. A future version
+of the protocol MAY add a fingerprint of a public key used by the device
+to authenticate the pairing.
+</t>
+<t>
 [[TODO: We should precisely specify the data layout of this QR code.
 It could either be the wire format of the corresponding resource records (which would be easier for us),
 or a more efficient representation. If we chose the wire format, we could use a fix name as instance name.]]
@@ -823,11 +901,11 @@ enum {
 </t>
 <t>
 Devices implementing the service MUST 
-support TLS 1.2 <xref target="RFC5246" />, and SHOULD support TLS 1.3 as soon as 
+support TLS 1.2 <xref target="RFC5246" />, and MAY negotiate TLS 1.3 when 
 it becomes available.
 When using TLS, the client and server MUST negotiate a ciphersuite
 providing forward secrecy (PFS), and strong encryption (256 bits symmetric 
-key). All implementations using TLS 1.2 SHOULD be able to negotiate
+key). All implementations using TLS 1.2 MUST be able to negotiate
 the cipher suite TLS_DH_anon_WITH_AES_256_CBC_SHA256.
 </t>
 <t>
@@ -1003,11 +1081,9 @@ terminating the pairing exchange.
 </t>
 </section>
 
+</section> <!-- end of solution -->
 
-
-</section>
-
-<section title="Security Considerations">
+<section title="Security Considerations" anchor="securityCons" >
 <t>
 We need to consider two types of attacks against a pairing 
 system: attacks that occur during the establishment of the 
@@ -1024,7 +1100,8 @@ keys. The
 discovery procedures specified in <xref target="discoverSpec" /> 
 and the authentication procedures specified in 
 <xref target="serviceSpec" /> are specifically designed to
-mitigate such attacks.
+mitigate such attacks, assuming that the client and user are in close, physical 
+proximity and thus a human user can visually acquire and verify the pairing information.
 </t>
 
 <t>
@@ -1041,19 +1118,19 @@ to the validity of pairings, discard the corresponding keys when
 the time has passed, and establish new pairings.
 </t>
 
-</section>
+</section> <!-- end of security -->
 
 
 <section title="IANA Considerations" anchor="iana">
 <t>
 This draft does not require any IANA action.
 </t>
-</section>
+</section> <!-- end of iana -->
 
 <section title="Acknowledgments">
-    <t>
-      TODO
-    </t>
+<t>
+We would like to thank Steve Kent for a detailed early review of this document.
+</t>
 </section>
 </middle>
 
@@ -1081,13 +1158,19 @@ This draft does not require any IANA action.
     <author initials="A." surname="Roscoe" fullname="Andrew William Roscoe">
       <organization/>
     </author>
-    <date year="2011"/>
+    <date year="2011" month="January"/>
   </front>
+<seriesInfo 
+name="DOI:"
+value="10.3233/JCS-2010-0403" />
+<seriesInfo 
+name="Journal of Computer Security,"
+value="Volume 19 Issue 1, Pages 139-201" />
 </reference>
 
 <reference anchor="KFR09" target="">
   <front>
-    <title>Authentication protocols based on low-bandwidth unspoofable channels: a comparative survey</title>
+    <title>Usability and Security of Out-Of-Band Channels in Secure Device Pairing Protocols</title>
     <author initials="R." surname="Kainda" fullname="Ronald Kainda">
       <organization/>
     </author>
@@ -1097,13 +1180,18 @@ This draft does not require any IANA action.
     <author initials="A." surname="Roscoe" fullname="Andrew William Roscoe">
       <organization/>
     </author>
-    <date year="2009"/>
+    <date year="2009" month="January"/>
   </front>
+<seriesInfo 
+name="DOI:" value="10.1145/1572532.1572547" />
+<seriesInfo 
+name="SOUPS 09,"
+value="Proceedings of the 5th Symposium on Usable Privacy and Security, Mountain View, CA" />
 </reference>
 
 <reference anchor="USK11" target="">
   <front>
-    <title>. Pairing devices for social interactions: a comparative usability evaluation </title>
+    <title>Pairing devices for social interactions: a comparative usability evaluation </title>
     <author initials="E." surname="Uzun" fullname="Ersin Uzun">
       <organization/>
     </author>
@@ -1113,8 +1201,14 @@ This draft does not require any IANA action.
     <author initials="A." surname="Kumar" fullname="Arun Kumar">
       <organization/>
     </author>
-    <date year="2009"/>
+    <date year="2011" month="May"/>
   </front>
+<seriesInfo 
+name="DOI:"
+value="10.1145/1978942.1979282" />
+<seriesInfo 
+name="Proceedings of the International Conference on Human Factors in Computing Systems,"
+value="CHI 2011, Vancouver, BC, Canada" />
 </reference>
 
 
@@ -1147,7 +1241,26 @@ This draft does not require any IANA action.
     <date year="2016"/>
   </front>
 </reference>
-</references>
 
+<reference anchor="NS1978" target="">
+  <front>
+    <title>. Using encryption for authentication in large networks of computers </title>
+    <author initials="R." surname="Needham" fullname="Roger Needham">
+      <organization/>
+    </author>
+    <author initials="M." surname="Schroeder" fullname="Michael Schroeder">
+      <organization/>
+    </author>
+    <date year="1978" month="December" />
+  </front>
+  <seriesInfo 
+name="Communications of the ACM 21 (12):"
+value="993-999" />
+  <seriesInfo 
+name="DOI:"
+value="10.1145/359657.359659" />
+</reference>
+
+</references>
 </back>
 </rfc>
