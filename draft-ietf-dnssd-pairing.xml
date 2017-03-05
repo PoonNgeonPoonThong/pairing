@@ -180,19 +180,20 @@
 </t>
 </section>
 
-<section title="Document organization" >
+<section title="Document Organization" >
 <t>
 NOTE TO RFC EDITOR: remove or rewrite this section before publication.
 </t>
 <t>
 This document is organized in two parts. The first part, composed of <xref target="intro"/>,
-<xref target="problem"/>, and <xref target="design"/> presents the pairing need, the list of requirements that shall be met, and the general design of the solution. This first part is informational in nature. The second part, composed of <xref target="solution"/> and <xref target="securityCons" />, is the actual specification of the protocol. 
+<xref target="problem"/>, and <xref target="design"/> presents the pairing need, the list of requirements that shall be met, and the general design of the solution.
+This first part is informational in nature. The second part, composed of <xref target="solution"/> and <xref target="securityCons" />, is the actual specification of the protocol. 
 </t>
 <t>
 In his early review, Steve Kent observed that the style of the first part seems inappropriate for a standards track document,
-and suggested that the two parts be split into two documents, the first part becoming an 
-informational document, and the second focusing on standard track specification of the protocol, making reference to the informational document as appropriate. We, the authors, will seek working
-group approval before performing this split.
+and suggested that the two parts should be split into two documents, the first part becoming an 
+informational document, and the second focusing on standard track specification of the protocol, making reference to the informational document as appropriate.
+We, the authors, will seek working group approval before performing this split.
 </t>
 </section>
 
@@ -221,7 +222,7 @@ protocols, tailored to specific technologies.
 This specification defines a pairing protocol that is independent of the underlying 
 technology. We simply make the hypothesis that the two parties engaged in the pairing
 can discover each other and then establish connections over IP in order to
-agree a shared secret.
+agree on a shared secret.
 </t>
 <t>
 [[TODO: Should we support certificates besides a shared secret?]]
@@ -289,7 +290,7 @@ displays are available.
 <t>
 A further problem with these PIN based approaches is that -- in contrast to SASes --
 the PIN is a secret instrumental in the security algorithm.
-To guarantee security, this PIN had to be transmitted via a secure out of band channel.
+To guarantee security, this PIN would have to be transmitted via a secure out of band channel.
 </t>
 
 </section>
@@ -340,7 +341,7 @@ Sound systems, in which one systems emits a sequence of sounds or ultrasounds th
 <t>
 A common problem with these solutions is that they require special capabilities that may not be present in every device. 
 Another problem is that they are often one-way channels. Yet another problem is that the side channel is not
-necessarily secret. QR codes could be read by third parties. Powerful radios antennas might be able to interfere with 
+necessarily secret. QR codes could be read by third parties. Powerful radio antennas might be able to interfere with 
 NFC. Sensitive microphones might pick the sounds. We will discuss the specific case of QR codes in <xref target="QRDiscuss" />.
 </t>
 </section>
@@ -348,8 +349,8 @@ NFC. Sensitive microphones might pick the sounds. We will discuss the specific c
 <section title="Short Authentication Strings" >
 <t>
 The evolving pairing protocols seem to converge towards a "display and compare" method. 
-This is in line with academic studies, such as <xref target="KFR09" /> or <xref target="USK11" />.
-This points to a very simple scenario:
+This is in line with academic studies, such as <xref target="KFR09" /> or <xref target="USK11" />,
+and points to a very simple scenario:
 </t>
 <t>
 <list style="numbers">
@@ -369,7 +370,7 @@ If the strings match, Alice and Bob accept the pairing.
 </t>
 <t>
 Most existing pairing protocols display the fingerprint of the key as a 6 or 7 digit
-numbers. Usability studies show that gives good results, with little risk that
+numbers. Usability studies show that this method gives good results, with little risk that
 users mistakenly accept two different numbers as matching. However, the authors of 
 <xref target="USK11" /> found that people had more success comparing computer 
 generated sentences than comparing numbers. This is in line with the argument in
@@ -378,11 +379,11 @@ On the other hand, standardizing strings is more complicated than standardizing 
 We would need to specify a list of common words, and the process to go from a binary 
 fingerprint to a set of words. We would need to be concerned with internationalization 
 issues, such as using different lists of words in German and in English. This could
-require negotiation of word lists or languages inside the pairing protocols. 
+require the negotiation of word lists or languages inside the pairing protocols. 
 </t>
 <t>
 In contrast, numbers are easy to specify, as in "take a 20 bit number and 
-display it as an integer using decimal notation."
+display it as an integer using decimal notation".
 </t>
 
 </section>
@@ -392,11 +393,12 @@ display it as an integer using decimal notation."
 <section title="Resist Cryptographic Attacks" anchor="MITMCryptoReq" >
 <t>
 It is tempting to believe that once two peers are connected, they could create
-a secret with a few simple steps, such as for example exchange two nonces, 
-hash the concatenation of these nonces with the shared secret that is about to be established, display
+a secret with a few simple steps, such as for example (1) exchange two nonces, 
+(2) hash the concatenation of these nonces with the shared secret that is about to be established, (3) display
 a short authentication string composed of a short version of that hash 
-on each device, and verify that the two values match. The sequence
-of messages would be something like:
+on each device, and (4) verify that the two values match.
+This naive approach might yield the following sequence of messages:
+
 </t>
 <t>
 <figure>
@@ -443,8 +445,7 @@ in the middle. Let's redraw the same message flow, this time involving Eve:
 </figure>
 </t>
 <t>
-Let's now assume that to pick the nonce nB' smartly, Eve runs the following
-algorithm:
+Let's now assume that, in order to pick the nonce nB' smartly, Eve runs the following algorithm:
 </t>
 <t>
 <figure>
@@ -461,8 +462,8 @@ algorithm:
 </figure>
 </t>
 <t>
-Of course, running this algorithm will require in theory as many iterations as
-the possible values of the short hash. But hash algorithms are fast, and it
+Of course, running this algorithm will, in theory, require as many iterations as
+there are possible values of the short hash. But hash algorithms are fast, and it
 is possible to try millions of values in less than a second. If the short
 string is made up of fewer than 6 digits, Eve will find a matching nonce 
 quickly, and Alice and Bob will hardly notice the delay. Even if the 
@@ -521,7 +522,7 @@ depends on the shared secret "s", which acts as a "salt" and reduces
 the effectiveness of potential attacks based on pre-computed 
 catalogs. For simplicity, the design used a simple concatenation 
 mechanism, but we could instead use a keyed-hash message authentication 
-code (HMAC, <xref target="RFC2104"/>, <xref target="RFC6151"/>), using 
+code (HMAC <xref target="RFC2104"/>, <xref target="RFC6151"/>), using 
 the shared secret as a key, since the HMAC construct has
 proven very robust over time. Then, we can constrain the size of
 the random numbers to be exactly the same as the output of the hash 
@@ -535,7 +536,7 @@ padding.
 <t>
 Pairing exposes a relation between several devices and their owners. Adversaries may
 attempt to collect this information, for example in an attempt to track 
-devices, their owners, or their "social graph." It is often argued that
+devices, their owners, or their "social graph". It is often argued that
 pairing could be performed in a safe place, from which adversaries are assumed 
 absent, but experience shows that such assumptions are often misguided.
 It is much safer to acknowledge the privacy issues and design the pairing
@@ -543,11 +544,9 @@ process accordingly.
 </t>
 <t>
 In order to start the pairing process, devices must first discover each other.
-We do not have the option of
-using the private discovery protocol <xref target="I-D.ietf-dnssd-privacy" /> 
-since the privacy of that protocol depends on the pre-existing pairing. 
-In the simplest design, 
-one of the devices will announce a "friendly name" using DNS-SD. 
+We do not have the option of using the private discovery protocol <xref target="I-D.ietf-dnssd-privacy" /> 
+since the privacy of that protocol depends on a pre-existing pairing. 
+In the simplest design, one of the devices will announce a "friendly name" using DNS-SD. 
 Adversaries could monitor the discovery protocol, and record that name.
 An alternative would be for one device to announce a random name, and communicate
 it to the other device via some private channel. There is an obvious
@@ -615,7 +614,7 @@ We will need to specify the hash algorithm used for the SAS
 computation and validation, which carries some of the issues
 associated with "designing our own crypto". One
 solution would be to use the same hash algorithm negotiated by
-the TLS connection, but common TLS packages do not not always 
+the TLS connection, but common TLS packages do not always 
 make this algorithm identifier available
 through standard APIs. A fallback solution is to
 specify a state of the art keyed MAC algorithm.
@@ -639,27 +638,31 @@ access these data and compromise the protocol. On the other hand, there are ways
 to use QR code even without assuming secrecy.
 </t>
 <t>
-QR codes could be used at two of the three stages of pairing: Discovering the peer device, and authenticating the shared secret. The choice to use QR code in the discovery phase, in the 
-agreement phase, or in bothphases depends on usability and security considerations:
+QR codes could be used at two of the three stages of pairing: Discovering the peer device, and authenticating the shared secret.
+The choice to use QR code in the discovery phase, in the agreement phase, or in both phases depends on usability and security considerations:
 </t>
 <t>
 <list style="symbols" >
 <t>
 Typical network based discovery involves interaction with two devices. The device to be discovered
 is placed in "server" mode, and waits for requests from the network. The device performing the
-discovery retrieves from the network a list of candidates. When there are more than one such candidates, the device user is expected to select the expected target from a list. In QR code mode, the discovered device will display a QR code, which the user will scan using the second device. The QR code will embed the device's name, its IP address, and the port number of the pairing service. The connection will be automatic, without relying on the network discovery.
+discovery retrieves a list of candidates from the network. When there is more than one such candidate, the device user is expected to select the expected target from a list.
+In QR code mode, the discovered device will display a QR code, which the user will scan using the second device.
+The QR code will embed the device's name, its IP address, and the port number of the pairing service. The connection will be automatic, without relying on the network discovery.
 This is arguably less error-prone and safer than selecting from a network provided list.
 </t>
 <t>
 SAS based agreement involves displaying a short string on each device's display, and asking the
-user to verify that both devices display the same string. In QR code mode, one device could display a QR code containing some form of proof, for example a long hash of the shared secret and the nonces. Because the hash is longer, the resistance to MITM attack is better than using a simple nonce. Also, because the procedure is automated, there is no dependency on the user diligence at comparing the short strings. No further user interaction is a device that has 
-scanned and verified the QR code, but some form of manual confirmation is still required on 
-the "server" device.
+user to verify that both devices display the same string. In QR code mode, one device could display a QR code containing some form of proof,
+for example a long hash of the shared secret and the nonces. Because the hash is longer, the resistance to MITM attack is better than using a simple nonce.
+Also, because the procedure is automated, there is no dependency on the user diligence at comparing the short strings.
+No manual verification is requried as the device has scanned and verified the QR code,
+but some form of manual confirmation is still required on the "server" device.
 </t>
 </list>
 </t>
 <t>
-Use of QR code in either the discovery or the agreement phase makes sense, but use in both 
+The usage of QR codes in either the discovery or the agreement phase makes sense, but use in both 
 phases seems cumbersome. The ideal interaction would involve scanning just one code, and 
 pushing a confirmation on the server if everything looks fine. This could be achieved if the
 initial QR code, used in the discovery phase, contained enough information to automate the
@@ -717,10 +720,9 @@ This "one shot version" of the pairing exchange is tempting, but
 the specification of the public key, its hash,
 and the construction of the proof clearly requires more work, if only to guarantee
 that the streamlined exchange resists to MITM attacks.
-If this version is developed developed, it would
-bypass the need of scanning QR code in the agreement phase. Assuming
-that it will be developed eventually, it makes sense to concentrate
-first on the optional use of QR code during the discovery phase.
+If this version was developed, it would bypass the need of scanning a QR code in the agreement phase.
+Assuming that it will be developed eventually, it makes sense to concentrate
+first on the optional use of a QR code during the discovery phase.
 </t>
 
 </section>
@@ -743,7 +745,7 @@ to manage secrets shared between exactly two parties than secrets shared with
 an unspecified set of devices.
 </t>
 <t>
-Transitive pairing raises similar issues. Suppose that a group of users want to collaborate. 
+Transitive pairing raises similar issues. Suppose that a group of users wants to collaborate. 
 Will they need to set up a fully connected graph of pairings using the simple peer-to-peer
 mechanism, or could they use some transitive set, so that if Alice is connected with Bob and 
 Bob with Carol, Alice automatically gets connected with Carol? Such transitive mechanisms
@@ -773,12 +775,12 @@ verified short authentication strings (SAS), considering both security and user 
 <t>
 The goal of the discovery phase is establishing a connection, which is later used to
 exchange the pairing data, between the two devices that are about to be paired
-in an IP network without any a priori knowledge and without publishing any private information.
+in an IP network without any prior knowledge and without publishing any private information.
 In accordance with TLS, we refer to the device initiating the cryptographic protocol as client,
 and to the other device as server; the server has to be discoverable by the client.
 </t>
 <t>
-Granting privacy during the discovery phase without relying on a priori knowledge demands another user interaction (besides
+Granting privacy during the discovery phase without relying on prior knowledge demands another user interaction (besides
 the SAS verification during the authentication phase).
 There are two possible ways of realizing this user interaction depending on whether QR codes are supported or not.
 If QR codes are supported, the discovery process can be independent of DNS-SD, because 
