@@ -88,7 +88,7 @@
     </title>
 
    <author fullname="Christian Huitema" initials="C." surname="Huitema">
-      <organization></organization>
+      <organization>Private Octopus Inc.</organization>
       <address>
         <postal>
           <street> </street>
@@ -683,13 +683,14 @@ public key, or the hash of a public key. This will require a modification of the
                               &lt;-- nB
     nA --&gt;
                           verifies h_a == hash(s|nA)
+
     Computes              Computes
     h = hash(s|nA|nB)     h = hash(s|nA|nB)
     [Displays short       [Displays short
     version of h]         version of h]
 
     indicates QR 
-    code scanned --&gt
+    code scanned --&gt;
                           Computes proof
                           with h and public key
                               &lt;-- proof
@@ -710,6 +711,7 @@ variant, but at some point the client (Alice) indicates to the server
 then sends a proof of that it knows the complete hash "h", and that it 
 owns the stated public key. If the client validates the proof, the server 
 validates the pairing.
+</t>
 <t>
 This "one shot version" of the pairing exchange is tempting, but 
 the specification of the public key, its hash,
