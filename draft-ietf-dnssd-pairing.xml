@@ -662,69 +662,65 @@ but some form of manual confirmation is still required on the "server" device.
 </list>
 </t>
 <t>
-The usage of QR codes in either the discovery or the agreement phase makes sense, but use in both 
-phases seems cumbersome. The ideal interaction would involve scanning just one code, and 
-pushing a confirmation on the server if everything looks fine. This could be achieved if the
-initial QR code, used in the discovery phase, contained enough information to automate the
-agreement phase. Given the "non secret" nature of the QR code scanning, this 
-additional information has to be a 
-public key, or the hash of a public key. This will require a modification of the protocol:
+Offering QR codes alternative to discovery and the agreement is straightforward. 
+If QR codes are used, the pairing program on the server side might display something 
+like:
 </t>
 <t>
 <figure>
 <artwork>
-    Alice                       Bob
-                          Display QR code
-    Scans QR code 
+   Please connect to "Bob's phone 359"
+   or scan the following QR code:
 
-    g^xA --&gt;
-                            &lt;-- g^xB
+    mmmmmmm  m  m mmmmmmm 
+    # mmm # ## "m # mmm # 
+    # ### # m" #" # ### # 
+    #mmmmm# # m m #mmmmm# 
+    mm m  mm"## m mmm mm  
+    " ##"mm m"# ####"m""# 
+    #"mmm mm# m"# ""m" "m 
+    mmmmmmm #mmm###mm# m  
+    # mmm #  m "mm " "  " 
+    # ### # " m #  "## "# 
+    #mmmmm# ### m"m m  m  
 
-    Computes              Computes
-    s = g^xAxB            s = g^xAxB
-    h_a = hash(s|nA) --&gt;
-                              &lt;-- nB
-    nA --&gt;
-                          verifies h_a == hash(s|nA)
-
-    Computes              Computes
-    h = hash(s|nA|nB)     h = hash(s|nA|nB)
-    [Displays short       [Displays short
-    version of h]         version of h]
-
-    indicates QR 
-    code scanned --&gt;
-                          Computes proof
-                          with h and public key
-                              &lt;-- proof
-    Automatically
-    accepts pairing if
-    proof is verified
-                          Validates the pairing
-                          if client was successful.
-    
 </artwork>
 </figure>
 </t>
 <t>
-With these modifications, the only user interaction can be the scanning
-of the QR code. The protocol will be compatible with the "SAS based" 
-variant, but at some point the client (Alice) indicates to the server
-(Bob) that it is willing to perform automatic verification. The server 
-then sends a proof of that it knows the complete hash "h", and that it 
-owns the stated public key. If the client validates the proof, the server 
-validates the pairing.
+If Alice's device is capable of reading the QR code, it will just
+scan it, establishes a connection, and run the pairing protocol. 
+After the protocol messages have been exchanged, Bob's device
+will display a new QR code, encoding the hash code that should be
+matched. The UI might look like this:
 </t>
 <t>
-This "one shot version" of the pairing exchange is tempting, but 
-the specification of the public key, its hash,
-and the construction of the proof clearly requires more work, if only to guarantee
-that the streamlined exchange resists to MITM attacks.
-If this version was developed, it would bypass the need of scanning a QR code in the agreement phase.
-Assuming that it will be developed eventually, it makes sense to concentrate
-first on the optional use of a QR code during the discovery phase.
-</t>
+<figure>
+<artwork>
+   Please scan the following QR code,
+   or verify that your device displays
+   the number: 388125
 
+    mmmmmmm  m  m mmmmmmm 
+    # mmm # ## "m # mmm # 
+    # ### # m" #" # ### # 
+    #mmmmm# # m m #mmmmm# 
+    mm m  mm"## m mmm mm  
+    " ##"mm m"# ####"m""# 
+    #"mmm mm# m"# ""m" "m 
+    mmmmmmm #mmm###mm# m  
+    # mmm #  m "mm " "  " 
+    # ### # " m #  "## "# 
+    #mmmmm# ### m"m m  m  
+
+   Did the number match (Yes/No)?
+</artwork>
+</figure>
+</t>
+<t>
+With the use of QR code, the pairing is established with little
+reliance on user judgment, which is arguably safer.
+</t>
 </section>
 
 <section title="Intra User Pairing and Transitive Pairing">
@@ -790,9 +786,8 @@ Leveraging QR codes, the discovery proceeds as follows.
 <t>
 <list style="numbers">
 <t>
-  The server displays a QR code containing the clients A and AAAA resource records,
-  and further the SRV resource record corresponding to the pairing service instance. A privacy preserving instance name is not
-  necessary, because this instance is never published via an unsecured network.
+The server displays a QR code containing the instance name, 
+the IPv4 or IPv6 address, and the port number of the service/
 </t>
 <t>
 The client scans the QR code retrieving the necessary information for establishing a connection to the server.
@@ -813,8 +808,13 @@ available on the local network. This may result in the discovery
 of several servers.
 </t>
 <t>
-Among these available "pairing servers" the client user 
+Among these available "pairing servers" the client's user 
 selects the name that matches the name displayed by the server.
+</t>
+<t>
+Per DNS-SD, the client then retrieves the SRV records of the selected instance,
+select one of the document servers, retrieves its A or AAAA records, and
+establishes the connection.
 </t>
 </list>
 </t>
@@ -834,11 +834,12 @@ In the authentication phase, the users are asked to validate the pairing by comp
 If the SASes match, each user enters an agreement, for example by pressing a button labeled "OK", which results in the pairing being remembered.
 If they do not match, each user should cancel the pairing, for example by pressing a button labeled "CANCEL". 
 </t>
-
 <t>
 Depending on whether QR codes are supported, the SAS may also be represented as QR code.
-Despite the fact that using QR codes to represent the authentication string renders using longer authentication strings feasible,
-we suggest to always generate an SAS during the agreement phase, because this makes realizations of the agreement phase and the authentication phase independent.
+Despite the fact that using QR codes to represent the authentication string renders 
+using longer authentication strings feasible,
+we suggest to always generate an SAS during the agreement phase, because this makes 
+realizations of the agreement phase and the authentication phase independent.
 Devices may display the "real" name of the other device alongside the SAS.
 </t>
 
@@ -873,9 +874,7 @@ The client will discover that name and the corresponding connection parameters.
 If QR code scanning is available as OOB channel, the discovery data is
 directly transmitted via QR codes instead of DNS-SD over mDNS. The QR data contains
 connection data otherwise found in the SRV and A or AAAA records: 
-IPv4 or IPv6 address, port number, and optionally host name. A future version
-of the protocol MAY add a fingerprint of a public key used by the device
-to authenticate the pairing.
+IPv4 or IPv6 address, port number, and optionally host name. 
 </t>
 <t>
 [[TODO: We should precisely specify the data layout of this QR code.
