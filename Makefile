@@ -1,4 +1,5 @@
-TARGET    = draft-kaiser-dnssd-pairing
+TARGET    = draft-ietf-dnssd-pairing
+# TARGET    = draft-kaiser-dnssd-pairing
 SOURCE    = ${TARGET}.xml
 TXT       = ${TARGET}.txt
 HTML      = ${TARGET}.html
