@@ -635,18 +635,19 @@ QR codes are displayed as images. An adversary equipped with powerful cameras
 could read the QR code just as well as the pairing parties. If the pairing
 protocol design embedded passwords or pins in the QR code, adversaries could
 access these data and compromise the protocol. On the other hand, there are ways
-to use QR code even without assuming secrecy.
+to use QR codes even without assuming secrecy.
 </t>
 <t>
 QR codes could be used at two of the three stages of pairing: Discovering the peer device, and authenticating the shared secret.
-The choice to use QR code in the discovery phase, in the agreement phase, or in both phases depends on usability and security considerations:
+The choice to use QR codes in the discovery phase, in the agreement phase, or in both phases depends on usability and security considerations:
 </t>
 <t>
 <list style="symbols" >
 <t>
 Typical network based discovery involves interaction with two devices. The device to be discovered
 is placed in "server" mode, and waits for requests from the network. The device performing the
-discovery retrieves a list of candidates from the network. When there is more than one such candidate, the device user is expected to select the expected target from a list.
+discovery retrieves a list of candidates from the network. When there is more than one such candidate,
+the device user is expected to select the desired target from a list.
 In QR code mode, the discovered device will display a QR code, which the user will scan using the second device.
 The QR code will embed the device's name, its IP address, and the port number of the pairing service. The connection will be automatic, without relying on the network discovery.
 This is arguably less error-prone and safer than selecting from a network provided list.
@@ -656,15 +657,14 @@ SAS based agreement involves displaying a short string on each device's display,
 user to verify that both devices display the same string. In QR code mode, one device could display a QR code containing some form of proof,
 for example a long hash of the shared secret and the nonces. Because the hash is longer, the resistance to MITM attack is better than using a simple nonce.
 Also, because the procedure is automated, there is no dependency on the user diligence at comparing the short strings.
-No manual verification is requried as the device has scanned and verified the QR code,
+No manual verification is required as the device has scanned and verified the QR code,
 but some form of manual confirmation is still required on the "server" device.
 </t>
 </list>
 </t>
 <t>
-Offering QR codes alternative to discovery and the agreement is straightforward. 
-If QR codes are used, the pairing program on the server side might display something 
-like:
+Offering QR codes as an alternative to discovery and agreement is straightforward.
+If QR codes are used, the pairing program on the server side might display something like:
 </t>
 <t>
 <figure>
