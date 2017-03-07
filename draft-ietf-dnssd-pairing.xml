@@ -638,27 +638,30 @@ access these data and compromise the protocol. On the other hand, there are ways
 to use QR codes even without assuming secrecy.
 </t>
 <t>
-QR codes could be used at two of the three stages of pairing: Discovering the peer device, and authenticating the shared secret.
-The choice to use QR codes in the discovery phase, in the agreement phase, or in both phases depends on usability and security considerations:
+QR codes could be used at two of the three stages of pairing: Discovering the peer device, 
+and authenticating the shared secret. Using QR codes provide advantages in both phases:
 </t>
 <t>
 <list style="symbols" >
 <t>
 Typical network based discovery involves interaction with two devices. The device to be discovered
 is placed in "server" mode, and waits for requests from the network. The device performing the
-discovery retrieves a list of candidates from the network. When there is more than one such candidate,
+discovery retrieves a list of candidates from the network. When there is more than one such 
+candidate,
 the device user is expected to select the desired target from a list.
-In QR code mode, the discovered device will display a QR code, which the user will scan using the second device.
-The QR code will embed the device's name, its IP address, and the port number of the pairing service. The connection will be automatic, without relying on the network discovery.
+In QR code mode, the discovered device will display a QR code, which the user will scan 
+using the second device.
+The QR code will embed the device's name, its IP address, and the port number of the 
+pairing service. The connection will be automatic, without relying on the network discovery.
 This is arguably less error-prone and safer than selecting from a network provided list.
 </t>
 <t>
 SAS based agreement involves displaying a short string on each device's display, and asking the
-user to verify that both devices display the same string. In QR code mode, one device could display a QR code containing some form of proof,
-for example a long hash of the shared secret and the nonces. Because the hash is longer, the resistance to MITM attack is better than using a simple nonce.
-Also, because the procedure is automated, there is no dependency on the user diligence at comparing the short strings.
-No manual verification is required as the device has scanned and verified the QR code,
-but some form of manual confirmation is still required on the "server" device.
+user to verify that both devices display the same string. In QR code mode, one device could 
+display a QR code containing this short string. The other device could scan it and compare
+it to the locally computed version.
+Because the procedure is automated, there is no dependency on the user diligence at 
+comparing the short strings.
 </t>
 </list>
 </t>
@@ -701,17 +704,17 @@ matched. The UI might look like this:
    or verify that your device displays
    the number: 388125
 
-    mmmmmmm  m  m mmmmmmm 
-    # mmm # ## "m # mmm # 
-    # ### # m" #" # ### # 
-    #mmmmm# # m m #mmmmm# 
-    mm m  mm"## m mmm mm  
-    " ##"mm m"# ####"m""# 
-    #"mmm mm# m"# ""m" "m 
-    mmmmmmm #mmm###mm# m  
-    # mmm #  m "mm " "  " 
-    # ### # " m #  "## "# 
-    #mmmmm# ### m"m m  m  
+    mmmmmmm   mmm mmmmmmm 
+    # mmm # ""#m# # mmm # 
+    # ### # "#  # # ### # 
+    #mmmmm# # m"m #mmmmm# 
+    mmmmm mmm" m m m m m  
+     #"m mmm#"#"#"#m m#m  
+    ""mmmmm"m#""#""m #  m 
+    mmmmmmm # "m"m "m"#"m 
+    # mmm # mmmm m "# #"  
+    # ### # #mm"#"#m "    
+    #mmmmm# #mm"#""m "m"  
 
    Did the number match (Yes/No)?
 </artwork>
@@ -1049,8 +1052,16 @@ algorithm selected by the client in the ClientHashMessage.
 </t>
 <t>
 Both client and server display the SAS as a decimal integer,
-and ask the user to compare the values. If the values do not match, the user
-cancels the pairing. Otherwise, the protocol continues with the
+and ask the user to compare the values. 
+If the server supports QR codes, the server displays a QR code encoding
+the decimal string representation of the SAS. If the client is capable 
+of scanning QR codes, it may scan the value and compare it to the locally
+computed value. 
+</t>
+<t>
+If the values do not match, the user
+cancels the pairing. 
+Otherwise, the protocol continues with the
 exchange of names, both server and client announcing their own preferred
 name in a Success message
 </t>
