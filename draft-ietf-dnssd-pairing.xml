@@ -639,7 +639,7 @@ to use QR codes even without assuming secrecy.
 </t>
 <t>
 QR codes could be used at two of the three stages of pairing: Discovering the peer device, 
-and authenticating the shared secret. Using QR codes provide advantages in both phases:
+and authenticating the shared secret. Using QR codes provides advantages in both phases:
 </t>
 <t>
 <list style="symbols" >
