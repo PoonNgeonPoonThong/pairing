@@ -563,7 +563,7 @@ the environment is "safe," and using random names in public places.
 <t>
 During the pairing process, the two devices establish a connection
 and validate a pairing secret. As discussed in <xref target="MITMUIReq" />,
-we have to assume that adversaries can mount MITM attacks. The pairing 
+we have to assume that adversaries can mount MitM attacks. The pairing 
 protocol can detect such attacks and resist them, but the attackers will
 have access to all messages exchanged before the validation
 is performed. It is important to not exchange any privacy sensitive information
@@ -879,8 +879,8 @@ When the pairing service starts, the server starts publishing the chosen instanc
 The client will discover that name and the corresponding connection parameters.
 </t>
 <t>
-If QR code scanning is available as OOB channel, the discovery data is
-directly transmitted via QR codes instead of DNS-SD over mDNS. The QR data contains
+If QR code scanning is available as out-of-band channel, the discovery data is
+directly transmitted via QR codes instead of DNS-SD over mDNS. The QR code data contains
 connection data otherwise found in the SRV and A or AAAA records: 
 IPv4 or IPv6 address, port number, and optionally host name. 
 </t>
@@ -1112,9 +1112,9 @@ establishment.
 
 <t>
 During the establishment of the pairing system, we are
-concerned with privacy attacks and with MITM attacks. Privacy attacks
+concerned with privacy attacks and with MitM attacks. Privacy attacks
 reveal the existence of a pairing between two devices, which can be used 
-to track graphs of relations. MITM attacks result in compromised pairing
+to track graphs of relations. MitM attacks result in compromised pairing
 keys. The
 discovery procedures specified in <xref target="discoverSpec" /> 
 and the authentication procedures specified in 
