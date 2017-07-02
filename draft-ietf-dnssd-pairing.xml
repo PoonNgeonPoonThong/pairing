@@ -167,7 +167,7 @@
   Authenticating pairing data. Since in most cases the messages necessary to agree upon pairing data are send over an insecure channel, 
   means that guarantee the authenticity of these messages are necessary;
   otherwise the pairing data is in turn not suited as a means for a later proof of authenticity.
-  For the proposed pairing mechanism we use manual interaction involving an SAS 
+  For the proposed pairing mechanism we use manual authentication involving an SAS 
   (short authentication string) to proof the authenticity of the pairing data.
 </t>
 </list>
@@ -244,17 +244,19 @@ The parties engaged in the pairing must at least be able to verify their identit
 </t>
 </section>
 
-<section title="Adequate User Interface" anchor="MITMUIReq" >
+<section title="Manual Authentication" anchor="MITMUIReq" >
 <t>
 Because the pairing protocol is executed without prior knowledge, it is typically vulnerable to
-"Man-in-the-middle" attacks. While Alice is trying to establish a pairing with Bob, Eve positions 
+"Man-in-the-Middle" attacks. While Alice is trying to establish a pairing with Bob, Eve positions 
 herself in the middle. Instead of getting a pairing between Alice and Bob, both Alice and Bob get
 paired with Eve. This requires specific features in the protocol to
-detect man-in-the-middle attacks, and if possible resist them. The reference <xref target="NR11" /> 
-analyzes the various proposals to solve this problem, and in this document, we present 
-a layman description of these issues in <xref target="MITMCryptoReq" />. The
-various protocols proposed in the literature impose diverse constraints on the UI
-interface, which we will review here.
+detect Man-in-the-Middle attacks, and if possible resist them.
+</t>
+
+<t>
+This section discusses existing techniques that are used in practice,
+and <xref target="MITMCryptoReq" /> provides a layman description of the MiTM problem and countermeasures.
+A more in depth exploration of manually authenticated pairing protocols may be found in <xref target="NR11" /> and [thesis kaiserd].
 </t>
 
 <section title="Short PIN Proved Inadequate" >
@@ -290,7 +292,7 @@ displays are available.
 <t>
 A further problem with these PIN based approaches is that -- in contrast to SASes --
 the PIN is a secret instrumental in the security algorithm.
-To guarantee security, this PIN would have to be transmitted via a secure out of band channel.
+To guarantee security, this PIN would have to be transmitted via a secure out-of-band channel.
 </t>
 
 </section>
@@ -307,7 +309,7 @@ The Bluetooth Pairing protocol <xref target="BTLEPairing" /> denotes that as
 the "just works" method. It does indeed work, and if the pairing succeeds
 the devices will later be able to use the pairing keys to authenticate connections.
 However, the procedure does not provide any protection against
-MITM attacks during the pairing process. The only protection is that pushing the
+MitM attacks during the pairing process. The only protection is that pushing the
 button will only allow pairing for a limited time, thus limiting the
 opportunities of attacks.
 </t>
@@ -320,8 +322,8 @@ and display limited devices.
 </section>
 <section title="Short Range Communication" anchor="shortRange" >
 <t>
-There have been several attempts to define pairing protocols that use "secure
-channels." Most of them are based on short range communication systems,
+Many pairing protocols that use out-of-band channels have been defined.
+Most of them are based on short range communication systems,
 where the short range limits the feasibility for attackers to access the channels.
 Example of such limited systems include for example:
 </t>
@@ -340,28 +342,23 @@ Sound systems, in which one systems emits a sequence of sounds or ultrasounds th
 </t>
 <t>
 A common problem with these solutions is that they require special capabilities that may not be present in every device. 
-Another problem is that they are often one-way channels. Yet another problem is that the side channel is not
-necessarily secret. QR codes could be read by third parties. Powerful radio antennas might be able to interfere with 
+Another problem is that they are often one-way channels.
+<!-- Yet another problem is that the side channel is not necessarily secret. -->
+QR codes could be read by third parties. Powerful radio antennas might be able to interfere with 
 NFC. Sensitive microphones might pick the sounds. We will discuss the specific case of QR codes in <xref target="QRDiscuss" />.
 </t>
 </section>
 
 <section title="Short Authentication Strings" >
 <t>
-The evolving pairing protocols seem to converge towards a "display and compare" method. 
+The evolving pairing protocols seem to converge towards using Short Authentication Strins and verifying them via the "compare and confirm" method. 
 This is in line with academic studies, such as <xref target="KFR09" /> or <xref target="USK11" />,
-and points to a very simple scenario:
+and, from the users' perspective, results in a very simple interaction:
 </t>
 <t>
 <list style="numbers">
 <t>
-Alice initiates pairing
-</t>
-<t>
-Bob selects Alice's device from a list.
-</t>
-<t>
-Alice and Bob compare displayed strings that represent a fingerprint of the key.
+Alice and Bob compare displayed strings that represent a fingerprint of the afore exchanged pairing key.
 </t>
 <t>
 If the strings match, Alice and Bob accept the pairing.
@@ -419,8 +416,8 @@ This naive approach might yield the following sequence of messages:
 <t>
 If the two short hashes match, Alice and Bob are supposedly assured that
 they have computed the same secret, but there is a problem.
-The exchange may not deter a smart attacker
-in the middle. Let's redraw the same message flow, this time involving Eve:
+<!-- The exchange may not deter a smart attacker in the middle. -->
+Let's redraw the same message flow, this time involving the attacker Eve:
 </t>
 <t>
 <figure>
@@ -438,14 +435,15 @@ in the middle. Let's redraw the same message flow, this time involving Eve:
                       &lt;--nB'
     Computes                             Computes
     s' = g^xAxB'                           s" = g^xA'xB
-    h' = hash(s|nA|nB')                    h" = hash(s"|nA|nB)
+    h' = hash(s'|nA|nB')                    h" = hash(s"|nA|nB)
     Displays short                       Displays short
     version of h'                        version of h"
 </artwork>
 </figure>
 </t>
 <t>
-Let's now assume that, in order to pick the nonce nB' smartly, Eve runs the following algorithm:
+  In order to pick a nonce nB' that circumvents this naive security measure,
+  Eve runs the following algorithm:
 </t>
 <t>
 <figure>
@@ -454,7 +452,7 @@ Let's now assume that, in order to pick the nonce nB' smartly, Eve runs the foll
     s" = g^xA'xB
     repeat
        pick a new version of nB'
-       h' = hash(s|nA|nB')
+       h' = hash(s'|nA|nB')
        h" = hash(s"|nA|nB)
     until the short version of h' 
     matches the short version of h"
@@ -462,15 +460,21 @@ Let's now assume that, in order to pick the nonce nB' smartly, Eve runs the foll
 </figure>
 </t>
 <t>
-Of course, running this algorithm will, in theory, require as many iterations as
-there are possible values of the short hash. But hash algorithms are fast, and it
-is possible to try millions of values in less than a second. If the short
+Running this algorithm will take O(2^b) iterations on average (assuming a uniform distribution), where b is the bit length of the SAS.
+Since hash algorithms are fast, it is possible to try millions of values in less than a second.
+If the short
 string is made up of fewer than 6 digits, Eve will find a matching nonce 
 quickly, and Alice and Bob will hardly notice the delay. Even if the 
 matching string is as long as 8 letters, Eve will probably find a value
 where the short versions of h' and h" are close enough, e.g. start and end
 with the same two or three letters. Alice and Bob may well be fooled.
 </t>
+
+<t>
+  Eve could also utilize the fact that she may freely choose the whole input for the hash function and thus
+  choose g^xA' and g^xB' so that an arbitrary collision (birthday attack) instead of a second preimage is sufficient for fooling Alice and Bob.
+</t>
+
 <t>
 The classic solution to such problems is to "commit" a possible attacker to a nonce before sending it.
 This commitment can be realized by a hash.
@@ -516,8 +520,9 @@ Nguyen et al. <xref target="NR11" /> survey these protocols and compare them wit
 </t>
 <t>
 There is still a theoretical problem, if Eve has somehow managed to 
-"crack" the hash function. We build some "defense in depth" by 
-some simple measures. In the design presented above, the hash "h_a"
+"crack" the hash function.
+We build some "defense in depth" by some simple measures.
+In the design presented above, the hash "h_a"
 depends on the shared secret "s", which acts as a "salt" and reduces
 the effectiveness of potential attacks based on pre-computed 
 catalogs. For simplicity, the design used a simple concatenation 
@@ -546,7 +551,7 @@ process accordingly.
 In order to start the pairing process, devices must first discover each other.
 We do not have the option of using the private discovery protocol <xref target="I-D.ietf-dnssd-privacy" /> 
 since the privacy of that protocol depends on a pre-existing pairing. 
-In the simplest design, one of the devices will announce a "friendly name" using DNS-SD. 
+In the simplest design, one of the devices will announce a "user-friendly name" using DNS-SD. 
 Adversaries could monitor the discovery protocol, and record that name.
 An alternative would be for one device to announce a random name, and communicate
 it to the other device via some private channel. There is an obvious
@@ -560,7 +565,7 @@ During the pairing process, the two devices establish a connection
 and validate a pairing secret. As discussed in <xref target="MITMUIReq" />,
 we have to assume that adversaries can mount MITM attacks. The pairing 
 protocol can detect such attacks and resist them, but the attackers will
-have access to all messages exchanged before validation
+have access to all messages exchanged before the validation
 is performed. It is important to not exchange any privacy sensitive information
 before that validation. This includes, for example, the identities of the
 parties or their public keys.
@@ -572,13 +577,13 @@ parties or their public keys.
 <t>
 The pairing algorithms typically combine the establishment of a shared
 secret through an [EC]DH exchange with the verification of that secret
-through displaying and comparison of a "short authentication string" (SAS).
+through displaying and comparing a "short authentication string" (SAS).
 As explained in <xref target="MITMCryptoReq" />, the
 secure comparison requires a "commit before disclose" mechanism.
 </t>
 <t>
 We have three possible designs: (1) create a pairing algorithm from scratch,
-specifying our own crypto exchanges; (2) use an [EC]DH version of TLS to
+specifying our own cryptographic protocol; (2) use an [EC]DH version of TLS to
 negotiate a shared secret, export the key to the application as specified 
 in <xref target="RFC5705" />, and implement
 the "commit before disclose" and SAS verification as part of the pairing
@@ -728,7 +733,7 @@ reliance on user judgment, which is arguably safer.
 
 <section title="Intra User Pairing and Transitive Pairing">
 <t>
-There are two usage modes for pairing: inter-users, and intra-user. Users have multiple devices.
+There are two usage modes for pairing: inter-user, and intra-user. Users have multiple devices.
 The simplest design is to not distinguish between pairing devices belonging to two users,
 e.g., Alice's phone and Bob's phone, and devices belonging to the same user, e.g., Alice's 
 phone and her laptop. This will most certainly work, but it raises the problem of
@@ -816,7 +821,7 @@ selects the name that matches the name displayed by the server.
 </t>
 <t>
 Per DNS-SD, the client then retrieves the SRV records of the selected instance,
-select one of the document servers, retrieves its A or AAAA records, and
+selects one of the discovered servers, retrieves its A or AAAA records, and
 establishes the connection.
 </t>
 </list>
@@ -848,9 +853,9 @@ Devices may display the "real" name of the other device alongside the SAS.
 
 </section>
 
-<section title="Public Authentication Keys">
+<section title="Authenticating Public Keys">
   <t>
-    [[TODO: Should we discuss public authentication keys whose fingerprints are verified during pairing?]]
+    [[TODO: Should we discuss verifying public keys using our pairing mechanism?]]
 </t>
 </section>
 
