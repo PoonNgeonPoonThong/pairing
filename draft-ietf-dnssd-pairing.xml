@@ -343,9 +343,15 @@ Sound systems, in which one systems emits a sequence of sounds or ultrasounds th
 <t>
 A common problem with these solutions is that they require special capabilities that may not be present in every device. 
 Another problem is that they are often one-way channels.
-<!-- Yet another problem is that the side channel is not necessarily secret. -->
+</t>
+<t>
+The pairing protocols should not rely on the secrecy of the out-of-band channels.
 QR codes could be read by third parties. Powerful radio antennas might be able to interfere with 
-NFC. Sensitive microphones might pick the sounds. We will discuss the specific case of QR codes in <xref target="QRDiscuss" />.
+NFC. Sensitive microphones might pick the sounds. A more interesting property of these channels 
+is authenticity, i.e. an assurance that the data obtained over the out-of-band channel actually
+comes from the other party. This leads us to prefer out of band methods such
+as short authentication strings or QR codes that can be read directly from a device's display.
+We will discuss the specific case of QR codes in <xref target="QRDiscuss" />.
 </t>
 </section>
 
@@ -541,7 +547,7 @@ padding.
 <t>
 Pairing exposes a relation between several devices and their owners. Adversaries may
 attempt to collect this information, for example in an attempt to track 
-devices, their owners, or their "social graph". It is often argued that
+devices, their owners, or their social graph. It is often argued that
 pairing could be performed in a safe place, from which adversaries are assumed 
 absent, but experience shows that such assumptions are often misguided.
 It is much safer to acknowledge the privacy issues and design the pairing
@@ -551,14 +557,14 @@ process accordingly.
 In order to start the pairing process, devices must first discover each other.
 We do not have the option of using the private discovery protocol <xref target="I-D.ietf-dnssd-privacy" /> 
 since the privacy of that protocol depends on a pre-existing pairing. 
-In the simplest design, one of the devices will announce a "user-friendly name" using DNS-SD. 
+In the simplest design, one of the devices will announce a user-friendly name using DNS-SD. 
 Adversaries could monitor the discovery protocol, and record that name.
 An alternative would be for one device to announce a random name, and communicate
 it to the other device via some private channel. There is an obvious
 tradeoff here: friendly names are easier to use but less private than
 random names. We anticipate that different users will choose different
 tradeoffs, for example using friendly names if they assume that
-the environment is "safe," and using random names in public places.
+the environment is safe, and using random names in public places.
 </t>
 <t>
 During the pairing process, the two devices establish a connection
