@@ -345,12 +345,13 @@ A common problem with these solutions is that they require special capabilities 
 Another problem is that they are often one-way channels.
 </t>
 <t>
-The pairing protocols should not rely on the secrecy of the out-of-band channels.
+  The pairing protocols should not rely on the secrecy of the out-of-band channels; most of these
+  out-of-band channels do not provide confidentiality.
 QR codes could be read by third parties. Powerful radio antennas might be able to interfere with 
-NFC. Sensitive microphones might pick the sounds. A more interesting property of these channels 
-is authenticity, i.e. an assurance that the data obtained over the out-of-band channel actually
-comes from the other party. This leads us to prefer out of band methods such
-as short authentication strings or QR codes that can be read directly from a device's display.
+NFC. Sensitive microphones might pick the sounds.
+However, a property that all of these channels share
+is authenticity, i.e. an assurance that the data obtained over the out-of-band channel actually comes from the other party.
+This is because these out-of-band channels involve the user transmitting information from one device to the other.
 We will discuss the specific case of QR codes in <xref target="QRDiscuss" />.
 </t>
 </section>
