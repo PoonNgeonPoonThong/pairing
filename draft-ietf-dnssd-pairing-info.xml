@@ -50,6 +50,11 @@
 <!ENTITY I-D.ietf-dnssd-privacy PUBLIC ''
    "http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-dnssd-privacy.xml">
 
+
+<!ENTITY I-D.ietf-dnssd-pairing PUBLIC ''
+   "http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-dnssd-pairing.xml">
+
+
 <!ENTITY I-D.ietf-intarea-hostname-practice PUBLIC ''
    "http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-intarea-hostname-practice.xml">
 <!ENTITY I-D.ietf-dprive-dnsodtls PUBLIC ''
@@ -120,6 +125,10 @@
     <abstract>
         <t>
           This document discusses issues and problems occuring in the design of device pairing mechanism.
+          It presents experience with existing pairing systems and general user interaction requirements
+          to make the case for "short authentication strings". It then reviews the design of 
+          cryptographic algorithms designed to maximise the robustness of the short authentication
+          string mechanisms, as well as implementation considerations such as integration with TLS.
         </t>
     </abstract>
 </front>
@@ -133,11 +142,15 @@
   The necessary relationship between host and peer can be established by a centralized service, e.g. a certificate  authority,
   by a web of trust, e.g. PGP, or -- without using global identities -- by device pairing.
   </t>
-  
   <t>
-This document discusses issues and problems occuring in the design of device pairing mechanism.
-  </t>
-
+The general pairing requirement is easy to state: establish a trust relation between two entities in a 
+secure manner. But details matter, and in this section we explore the detailed requirements that 
+will guide the design of a pairing protocol.
+</t>
+ <t>
+This document does not specify an actual pairing protocol, but it served as the basis for
+the design of the pairing protocol developed for DNS-SD privacy <xref target="I-D.ietf-dnssd-pairing"/>.
+</t>
 <section title="Document Organization" >
 <t>
 NOTE TO RFC EDITOR: remove or rewrite this section before publication.
@@ -159,14 +172,6 @@ The working group approved this split.
 </section>
 
 </section> <!-- end of introduction -->
-
-
-<section title="Problem Statement and Requirements" anchor="problem" >
-<t>
-The general pairing requirement is easy to state: establish a trust relation between two entities in a 
-secure manner. But details matter, and in this section we explore the detailed requirements that guide
-our design.
-</t>
 
 <section title="Secure Pairing Over Internet Connections" anchor="securityReq" >
 <t>
@@ -489,11 +494,11 @@ Nguyen et al. <xref target="NR11" /> survey these protocols and compare them wit
 <t>
 There is still a theoretical problem, if Eve has somehow managed to 
 "crack" the hash function.
-We build some "defense in depth" by some simple measures.
+We can build "defense in depth" by some simple measures.
 In the design presented above, the hash "h_a"
 depends on the shared secret "s", which acts as a "salt" and reduces
 the effectiveness of potential attacks based on pre-computed 
-catalogs. For simplicity, the design used a simple concatenation 
+catalogs. The simplest design uses a concatenation 
 mechanism, but we could instead use a keyed-hash message authentication 
 code (HMAC <xref target="RFC2104"/>, <xref target="RFC6151"/>), using 
 the shared secret as a key, since the HMAC construct has
@@ -730,11 +735,10 @@ mechanisms are left for further study.
 </t>
 </section>
 
-</section> <!-- end of problem statement -->
-
 <section title="Security Considerations" anchor="securityCons" >
 <t>
-This document lists a set of security issues that have to be met by pairing protocols, but does not specify any protocol.
+This document lists a set of security issues that have to be met by pairing protocols, 
+but does not specify any protocol.
 </t>
 
 </section> <!-- end of security -->
@@ -748,7 +752,9 @@ This draft does not require any IANA action.
 
 <section title="Acknowledgments">
 <t>
-We would like to thank Steve Kent for a detailed early review of this document.
+We would like to thank Steve Kent for a detailed early review of an early draft of this document.
+Both him and Ted Lemon were influential in the decision to separate the analysis of pairing
+requirements from the specification of pairing protocol in <xref target="I-D.ietf-dnssd-pairing" />
 </t>
 </section>
 </middle>
@@ -760,6 +766,7 @@ We would like to thank Steve Kent for a detailed early review of this document.
        &rfc5705;
        &rfc6151;
        &rfc6189;
+       &I-D.ietf-dnssd-pairing;
        &I-D.ietf-dnssd-privacy;
        &I-D.miers-tls-sas;
 
