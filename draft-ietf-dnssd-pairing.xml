@@ -468,7 +468,7 @@ hash SAS as:
 <t>
 <list>
 <t>
-SAS = first 20 bits of HMAC_hash(S_p, R_c | R_s)
+SAS = first 20 bits of HMAC_hash(S_p, R_c || R_s)
 </t>
 <t>
 Where "HMAC_hash" is the HMAC function constructed with the hash
