@@ -50,6 +50,9 @@
 <!ENTITY I-D.ietf-dnssd-privacy PUBLIC ''
    "http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-dnssd-privacy.xml">
 
+<!ENTITY I-D.ietf-dnssd-pairing-info PUBLIC ''
+   "http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-dnssd-pairing-info.xml">
+
 <!ENTITY I-D.ietf-intarea-hostname-practice PUBLIC ''
    "http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-intarea-hostname-practice.xml">
 <!ENTITY I-D.ietf-dprive-dnsodtls PUBLIC ''
@@ -149,7 +152,6 @@
     allowing mutual automatic re-discovery at any later point in time along with mutual private authentication.
     We especially care about privacy and user-friendliness. This pairing system can provide the pairing secrets
     used in DNSSD Privacy Extensions <xref target="I-D.ietf-dnssd-privacy" />.
-    
   </t>
 
   <t>
@@ -175,6 +177,16 @@
   (short authentication string) to proof the authenticity of the pairing data.
 </t>
 </list>
+</t>
+<t>
+  The design of the protocol is informed by the analysis of pairing protocols issues presented in
+  <xref target="I-D.ietf-dnssd-pairing-info" />.
+</t>
+<t>
+Many pairing scenarios involve cell phones equipped with cameras capable of
+reading a QR code. In these scenarios, scanning QR codes might be more user friendly than
+selecting names or reading short authentication strings from on screen menus. An optional
+use of QR codes in pairing protocols is presented is <xref target="qrOption" />.
 </t>
 <section title="Requirements">
 <t>
@@ -456,7 +468,7 @@ hash SAS as:
 <t>
 <list>
 <t>
-SAS = first 20 bits of HMAC_hash(S_p, R_c + R_s)
+SAS = first 20 bits of HMAC_hash(S_p, R_c | R_s)
 </t>
 <t>
 Where "HMAC_hash" is the HMAC function constructed with the hash
@@ -509,7 +521,7 @@ terminating the pairing exchange.
 
 </section> <!-- end of solution -->
 
-<section title="Optional use of QR codes">
+<section title="Optional use of QR codes" anchor="qrOption" >
 <t>
 When QR codes are supported, the discovery process can be independent of DNS-SD, because 
 QR codes allow the transmission of a sufficient amount of data. The agreement process
@@ -626,6 +638,7 @@ and for their advice on how to improve it.
 </references>
 <references title="Informative References">
        &I-D.ietf-dnssd-privacy;
+       &I-D.ietf-dnssd-pairing-info;
 
 
 

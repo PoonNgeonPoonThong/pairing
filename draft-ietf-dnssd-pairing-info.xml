@@ -84,7 +84,7 @@
 <?rfc inline='yes' ?>
 
 <rfc category="info"
-     docName="draft-ietf-dnssd-pairing-info-00.txt"
+     docName="draft-ietf-dnssd-pairing-info-00"
      ipr="trust200902">
 
 <front>
