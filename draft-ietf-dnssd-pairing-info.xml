@@ -173,7 +173,7 @@ The working group approved this split.
 
 </section> <!-- end of introduction -->
 
-<section title="Secure Pairing Over Internet Connections" anchor="securityReq" >
+<section title="Protocol Independent Secure Pairing" anchor="securityReq" >
 <t>
 Many pairing protocols have already been developed, in particular for the
 pairing of devices over specific wireless networks. For example, the current Bluetooth 
@@ -185,13 +185,20 @@ security-enabled Wi-Fi networks in home and small office environments
 protocols, tailored to specific technologies.
 </t>
 <t>
-This specification defines a pairing protocol that is independent of the underlying 
-technology. We simply make the hypothesis that the two parties engaged in the pairing
-can discover each other and then establish connections over IP in order to
-agree on a shared secret.
+  In this document we provide background and discuss the design of a manullay authenticated pairing protocol
+  that is independent of the underlying network protocol stack.
+  We discuss (1) means allowing  the two parties engaged in the pairing
+  to discover each other in an existing unsecured network -- e.g. means for learning about the network parameters of the respective other device --
+  which allows them to establish a connection;
+  (2) agreeing on a shared secret via this connection; and (3)
+  manually authenticating this secret.
+
+  For our discussion and our secure pairing protocol specification <xref target="I-D.ietf-dnssd-pairing"/>,
+  we assume an IP based unsecured network.
+  With little adaption, this pairing mechanism can be used on other protocol stacks as well.
 </t>
 <t>
-[[TODO: Should we support certificates besides a shared secret?]]
+[[TODO: Should we discuss certificates besides a shared secret?]]
 </t>
 </section>
 
@@ -215,21 +222,21 @@ The parties engaged in the pairing must at least be able to verify their identit
 Because the pairing protocol is executed without prior knowledge, it is typically vulnerable to
 "Man-in-the-Middle" attacks. While Alice is trying to establish a pairing with Bob, Eve positions 
 herself in the middle. Instead of getting a pairing between Alice and Bob, both Alice and Bob get
-paired with Eve. This requires specific features in the protocol to
+paired with Eve. Because of this, the protocol requires specific features to
 detect Man-in-the-Middle attacks, and if possible resist them.
 </t>
 
 <t>
-This section discusses existing techniques that are used in practice,
+This section discusses existing techniques that are used in practice for manually authenticating a Diffie-Hellman key exchange,
 and <xref target="MITMCryptoReq" /> provides a layman description of the MiTM problem and countermeasures.
-A more in depth exploration of manually authenticated pairing protocols may be found in <xref target="NR11" /> and [thesis kaiserd].
+A more in depth exploration of manually authenticated pairing protocols may be found in <xref target="NR11" /> and <xref target="K17" />.
 </t>
 
 <section title="Short PIN Proved Inadequate" >
 <t>
 The initial Bluetooth pairing protocol relied on a four digit PIN, displayed by one of the devices to be paired.
-The user would read that PIN and provide it to the other device.
-The PIN would then be used in a Password Authenticated Key Exchange.
+The user read that PIN and provided it to the other device.
+The PIN was then used in a Password Authenticated Key Exchange.
 Wi-Fi Protected Setup <xref target="WPS" /> offered a similar option.
 There were various attacks against the actual protocol; some of the problems were caused by issues
 in the protocol, but most were tied to the usage of short PINs.
@@ -242,13 +249,13 @@ that. For example, an audio headset does not have any display capability. These 
 devices ended up using static PINs, with fixed values like "0000" or "0001".
 </t>
 <t>
-Even when the paired device could display a random PIN, that PIN will have to be copied
+Even when the paired device could display a random PIN, that PIN had to be copied
 by the user on the pairing device. It turns out that users do not like copying long
 series of numbers, and the usability thus dictated that the PINs be short -- four digits
 in practice. But there is only so much assurance as can be derived from a four digit key.
 </t>
 <t>
-It is interesting to note that the latest revisions of the Bluetooth Pairing protocol 
+The latest revisions of the Bluetooth Pairing protocol 
 <xref target="BTLEPairing" /> do not include the short PIN option anymore. The 
 PIN entry methods have been superseded by the simple "just works" method for devices
 without displays, and by a procedure based on an SAS (short authentication string) when
@@ -340,7 +347,7 @@ If the strings match, Alice and Bob accept the pairing.
 </t>
 <t>
 Most existing pairing protocols display the fingerprint of the key as a 6 or 7 digit
-numbers. Usability studies show that this method gives good results, with little risk that
+number. Usability studies show that this method gives good results, with little risk that
 users mistakenly accept two different numbers as matching. However, the authors of 
 <xref target="USK11" /> found that people had more success comparing computer 
 generated sentences than comparing numbers. This is in line with the argument in
@@ -477,8 +484,8 @@ hash of her nonce before sending the actual value:
 <t>
 Alice will only disclose nA after
 having confirmation from Bob that hash(nA) has been received.
-At that point, Eve has a problem. She can still forge the values of the nonces
-but she needs to pick the nonce nA' before the actual value of nA has been 
+At that point, Eve has a problem. She can still forge the values of the nonces,
+but she needs to pick the nonce nA' before the actual value of nA has been
 disclosed.
 Eve would still have a random chance of fooling Alice and Bob, but it will be a very
 small chance: one in a million if the short authentication string is made of
@@ -880,6 +887,16 @@ value="993-999" />
   <seriesInfo 
 name="DOI:"
 value="10.1145/359657.359659" />
+</reference>
+
+<reference anchor="K17" target="http://nbn-resolving.de/urn:nbn:de:bsz:352-0-422757">
+  <front>
+    <title>Efficient Privacy-Preserving Configurationless Service Discovery Supporting Multi-Link Networks</title>
+    <author initials="D." surname="Kaiser" fullname="Daniel Kaiser">
+      <organization/>
+    </author>
+    <date year="2017"/>
+  </front>
 </reference>
 
 </references>
