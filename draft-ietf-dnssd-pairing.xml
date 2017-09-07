@@ -142,7 +142,7 @@
   between authorized peers, which must both know about the host's presence and be able 
   to decrypt messages sent by the host,
   and other peers, which must not be able to decrypt the host's messages and ideally 
-  should not be obtain information that could be used to identify the host.
+  should not obtain information that could be used to identify the host.
   The necessary relation between host and peer can be established by a centralized service, e.g. a certificate  authority,
   by a web of trust, e.g. PGP, or -- without using global identities -- by device pairing.
   </t>
@@ -201,15 +201,14 @@ use of QR codes in pairing protocols is presented is <xref target="qrOption" />.
 NOTE TO RFC EDITOR: remove or rewrite this section before publication.
 </t>
 <t>
-The original version of this document was organized in two parts. The first part presented the pairing need, 
-the list of requirements that shall be met. This first part was informational in nature. The second part, 
+The original version of this document was organized in two parts. The first part presented the pairing need,
+the list of requirements that shall be met. This first part was informational in nature. The second part
 composed the actual specification of the protocol. 
 </t>
 <t>
 In his early review, Steve Kent observed that the style of the first part seems inappropriate for a standards track document,
 and suggested that the two parts should be split into two documents, the first part becoming an 
 informational document, and the second focusing on standard track specification of the protocol, making reference to the informational document as appropriate.
-We, the authors, will seek working group approval before performing this split.
 </t>
 <t>
 The DNS-SD working group approved this split during its meeting in Prague in July 2017. This version of
@@ -221,8 +220,8 @@ the document implements the split, only retaining the specification part.
 
 <section title="Protocol Specification" anchor="solution" >
 <t>
-In the proposed pairing protocol, we will consider that the device that initiates the pairing
-is the "client" and the device that responds is the "server". 
+In the proposed pairing protocol, we will consider the device that initiates the pairing
+as the "client" and the device that responds as the "server". 
 The server will publish a "pairing service". The client will discover the service instance during the
 discovery phase, as explained in <xref target="discoverSpec"/>. The pairing service itself is specified 
 in <xref target="serviceSpec" />.
@@ -236,19 +235,19 @@ detailed in the following subsections.
 <section title="Discovery" anchor="discoverSpec" >
 <t>
 The goal of the discovery phase is establishing a connection, which is later used to
-exchange the pairing data, between the two devices that are about to be paired
+exchange the pairing data between the two devices that are about to be paired
 in an IP network without any prior knowledge and without publishing any private information.
 </t>
 <t>
-When the pairing service starts, the server will publish advertise the
+When the pairing service starts, the server will advertise the
 pairing service according to DNS-SD <xref target="RFC6763" /> over mDNS <xref target="RFC6762" />.
-In conformance with DNS-SD, the service is described will be described by an SRV record and by 
-and empty TXT record. These records will be organized as follow:
+In conformance with DNS-SD, the service is described by an SRV record and by and empty TXT record.
+These records will be organized as follows:
 </t>
 <t>
 <list style="numbers">
 <t>
-The pairing service is identified in DNS SD as "_pairing._tcp".
+The pairing service is identified in DNS-SD as "_pairing._tcp".
 </t>
 <t>
 The instance name will be a text chosen by the server. It MAY be a random string if the server does not
@@ -256,12 +255,12 @@ want to advertise its identity in the local environment, or the user friendly na
 other cases.
 </t>
 <t>
-The priority and weigh fields of the SRV record SHOULD be set according to <xref target="RFC6763" />.
+The priority and weight fields of the SRV record SHOULD be set according to <xref target="RFC6763" />.
 </t>
 <t>
-The host name MUST be set to the host name advertized by the server in MDNS. The server MAY
+The host name MUST be set to the host name advertised by the server in mDNS. The server MAY
 use a randomized host name as explained in <xref target="I-D.ietf-dnssd-privacy"/>, provided
-that this name is properly published in MDNS.
+that this name is properly published in mDNS.
 </t>
 <t>
 The port number MUST be set to the number at which the server is listening for the pairing
@@ -275,10 +274,10 @@ The discovery proceeds as follows:
 <t>
 <list style="numbers">
 <t>
-The server starts publishing the chosen instance name and displays it on the server's screen.
+The server advertises an instance of the above described pairing service and displays its instance name on the server's screen.
 </t>
 <t>
-The client performs a discovery of all the instances of the pairing service
+The client discovers all the instances of the pairing service
 available on the local network. This may result in the discovery
 of several instance names.
 </t>
@@ -287,9 +286,8 @@ Among these available instance names, the client's user
 selects the name that matches the name displayed by the server.
 </t>
 <t>
-Per DNS-SD, the client then retrieves the SRV records of the selected instance,
-selects one of the discovered servers, retrieves its A or AAAA records, and
-establishes the connection.
+  Per DNS-SD, the client then retrieves the SRV record of the selected instance,
+  retrieves the corresponding server's A (or AAAA) record, and establishes the connection.
 </t>
 </list>
 </t>
@@ -297,7 +295,7 @@ establishes the connection.
 </t>
 </section> <!-- End of discovery spec -->
 
-<section title="Agreement on a shared secret" anchor="agreementSpec">
+<section title="Agreement on a Shared Secret" anchor="agreementSpec">
 <t>
 Once the server has been selected at the end of the discovery phase, the client connects to it without 
 further user intervention.
@@ -332,7 +330,7 @@ empty.
 </list>
 </t>
 <t>
-The secret "S_p" will be authenticate in the authentication part of the protocol.
+The secret "S_p" will be authenticated in the authentication part of the protocol.
 </t>
 </section> <!-- End of agreement spec -->
 
@@ -521,13 +519,13 @@ terminating the pairing exchange.
 
 </section> <!-- end of solution -->
 
-<section title="Optional use of QR codes" anchor="qrOption" >
+<section title="Optional Use of QR Codes" anchor="qrOption" >
 <t>
 When QR codes are supported, the discovery process can be independent of DNS-SD, because 
 QR codes allow the transmission of a sufficient amount of data. The agreement process
 can also be streamlined by the scanning of a second QR code.
 </t>
-<section title="Discovery using QR Codes" anchor="discoverSpecQR" >
+<section title="Discovery Using QR Codes" anchor="discoverSpecQR" >
 <t>
 If QR code scanning is available as out-of-band channel, the discovery data is
 directly transmitted via QR codes instead of DNS-SD over mDNS. 
@@ -573,7 +571,7 @@ of scanning QR codes, it may scan the value and compare it to the locally
 computed value. 
 </t>
 <t>
-Once use agreement has been obtained, the protocol continues as in the 
+Once user agreement has been obtained, the protocol continues as in the 
 general case presented in <xref target="serviceSpec" />.
 </t>
 </section>
