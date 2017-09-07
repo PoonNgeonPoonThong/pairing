@@ -185,10 +185,11 @@ security-enabled Wi-Fi networks in home and small office environments
 protocols, tailored to specific technologies.
 </t>
 <t>
-  In this document we provide background and discuss the design of a manullay authenticated pairing protocol
+  In this document we provide background and discuss the design of a manually authenticated pairing protocol
   that is independent of the underlying network protocol stack.
   We discuss (1) means allowing  the two parties engaged in the pairing
-  to discover each other in an existing unsecured network -- e.g. means for learning about the network parameters of the respective other device --
+  to discover each other in an existing unsecured network -- e.g. means for learning about 
+  the network parameters of the respective other device --
   which allows them to establish a connection;
   (2) agreeing on a shared secret via this connection; and (3)
   manually authenticating this secret.
@@ -198,7 +199,10 @@ protocols, tailored to specific technologies.
   With little adaption, this pairing mechanism can be used on other protocol stacks as well.
 </t>
 <t>
-[[TODO: Should we discuss certificates besides a shared secret?]]
+<!-- TODO: Should we discuss certificates besides a shared secret? -->
+We limit the goal of the protocol to the establishment of a shared secret between two
+parties. Once that secret has been established, it can trivially be used to secure the exchange
+of other informations, such as for example public keys and certificates.
 </t>
 </section>
 
@@ -229,7 +233,8 @@ detect Man-in-the-Middle attacks, and if possible resist them.
 <t>
 This section discusses existing techniques that are used in practice for manually authenticating a Diffie-Hellman key exchange,
 and <xref target="MITMCryptoReq" /> provides a layman description of the MiTM problem and countermeasures.
-A more in depth exploration of manually authenticated pairing protocols may be found in <xref target="NR11" /> and <xref target="K17" />.
+A more in depth exploration of manually authenticated pairing protocols may be found in <xref target="NR11" />
+and <xref target="K17" />.
 </t>
 
 <section title="Short PIN Proved Inadequate" >
@@ -331,7 +336,8 @@ We will discuss the specific case of QR codes in <xref target="QRDiscuss" />.
 
 <section title="Short Authentication Strings" >
 <t>
-The evolving pairing protocols seem to converge towards using Short Authentication Strins and verifying them via the "compare and confirm" method. 
+The evolving pairing protocols seem to converge towards using Short Authentication Strings and
+verifying them via the "compare and confirm" method. 
 This is in line with academic studies, such as <xref target="KFR09" /> or <xref target="USK11" />,
 and, from the users' perspective, results in a very simple interaction:
 </t>
@@ -452,7 +458,8 @@ with the same two or three letters. Alice and Bob may well be fooled.
 
 <t>
   Eve could also utilize the fact that she may freely choose the whole input for the hash function and thus
-  choose g^xA' and g^xB' so that an arbitrary collision (birthday attack) instead of a second preimage is sufficient for fooling Alice and Bob.
+  choose g^xA' and g^xB' so that an arbitrary collision (birthday attack) instead of a second preimage is
+  sufficient for fooling Alice and Bob.
 </t>
 
 <t>
@@ -718,7 +725,8 @@ The simplest design is to not distinguish between pairing devices belonging to t
 e.g., Alice's phone and Bob's phone, and devices belonging to the same user, e.g., Alice's 
 phone and her laptop. This will most certainly work, but it raises the problem of
 transitivity. If Bob needs to interact with Alice, should he install just one pairing for 
-"Alice and Bob", or should he install four pairings between Alice phone and laptop and Bob phone and laptop? Also, what happens if Alice gets a new phone?
+"Alice and Bob", or should he install four pairings between Alice phone and laptop and Bob
+phone and laptop? Also, what happens if Alice gets a new phone?
 </t>
 <t>
 One tempting response is to devise a synchronization mechanism that will let
@@ -733,7 +741,8 @@ Transitive pairing raises similar issues. Suppose that a group of users wants to
 Will they need to set up a fully connected graph of pairings using the simple peer-to-peer
 mechanism, or could they use some transitive set, so that if Alice is connected with Bob and 
 Bob with Carol, Alice automatically gets connected with Carol? Such transitive mechanisms
-could be designed, e.g. using a variation of Needham-Scroeder symmetric key protocol <xref target="NS1978" />, but it will require some extensive work. Groups can of course use simpler 
+could be designed, e.g. using a variation of Needham-Scroeder symmetric key protocol
+<xref target="NS1978" />, but it will require some extensive work. Groups can of course use simpler 
 solution, e.g., build some star topology.
 </t>
 <t>
