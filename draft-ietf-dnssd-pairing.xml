@@ -82,7 +82,7 @@
 <?rfc inline='yes' ?>
 
 <rfc category="std"
-     docName="draft-ietf-dnssd-pairing-03.txt"
+     docName="draft-ietf-dnssd-pairing-03"
      ipr="trust200902">
 
 <front>
@@ -179,8 +179,8 @@
 </list>
 </t>
 <t>
-  The design of the protocol is informed by the analysis of pairing protocols issues presented in
-  <xref target="I-D.ietf-dnssd-pairing-info" />.
+  The design of this protocol is based on the analysis of pairing protocols issues presented in
+  <xref target="I-D.ietf-dnssd-pairing-info" /> and in <xref target="K17" />. 
 </t>
 <t>
 Many pairing scenarios involve cell phones equipped with cameras capable of
@@ -638,7 +638,15 @@ and for their advice on how to improve it.
        &I-D.ietf-dnssd-privacy;
        &I-D.ietf-dnssd-pairing-info;
 
-
+<reference anchor="K17" target="http://nbn-resolving.de/urn:nbn:de:bsz:352-0-422757">
+  <front>
+    <title>Efficient Privacy-Preserving Configurationless Service Discovery Supporting Multi-Link Networks</title>
+    <author initials="D." surname="Kaiser" fullname="Daniel Kaiser">
+      <organization/>
+    </author>
+    <date year="2017"/>
+  </front>
+</reference>
 
 
 </references>
