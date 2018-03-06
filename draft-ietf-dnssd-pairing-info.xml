@@ -84,7 +84,7 @@
 <?rfc inline='yes' ?>
 
 <rfc category="info"
-     docName="draft-ietf-dnssd-pairing-info-00"
+     docName="draft-ietf-dnssd-pairing-info-01"
      ipr="trust200902">
 
 <front>
@@ -120,7 +120,7 @@
         <email>huitema@huitema.net</email>
       </address>
     </author>
-    <date year="2017" />
+    <date year="2018" />
 
     <abstract>
         <t>
@@ -237,7 +237,7 @@ A more in depth exploration of manually authenticated pairing protocols may be f
 and <xref target="K17" />.
 </t>
 
-<section title="Short PIN Proved Inadequate" >
+<section title="Short PIN Proved Inadequate" anchor="shortpin" >
 <t>
 The initial Bluetooth pairing protocol relied on a four digit PIN, displayed by one of the devices to be paired.
 The user read that PIN and provided it to the other device.
@@ -716,6 +716,51 @@ matched. The UI might look like this:
 With the use of QR code, the pairing is established with little
 reliance on user judgment, which is arguably safer.
 </t>
+</section>
+
+<section title="Revisiting the PIN versus SAS discussion">
+<t>
+In section <xref target="shortpin"/> we presented the drawbacks of using short pins.
+One could object that many of the technical issues could be overcome by use of better
+PAKE algorithms, or by supporting longer PIN. And one could also argue that
+if PIN based pairing algorithms suffer from failure modes such as static PIN
+configuration, SAS based protocols are vulnerable to SAS bypass.
+</t>
+<t>
+The SAS bypass argument is rooted in the psychology of users. In practice, pairing
+processes can be stressful. The user has to discover on each device the proper
+combination of key entries that brings up the required pairing UI, will be anxious
+and eager to complete the procedure, and may well
+be predisposed to click "OK" in the final stage of the algorithm without actually
+verifying the SAS. Some users may bypass the required comparison step, because they
+just want to be done with the pairing.
+</t>
+<t>
+An advantage of PIN based processes is that they cannot be bypassed. The user
+must enter the PIN before continuing. Also, once the PIN is entered, everything
+is automatic. The user does not need to input more data, or press any additional
+button.
+PIN based protocols would be a great fit for the QR-code based interaction. One
+device would display a QR code that contains the PIN. Once the QR code is scanned
+by the other device, the process is automated. 
+</t>
+<t>
+QR based PIN entry may be user friendly, but one of the arguments developed
+in <xref target="shortpin"/> still holds. Let's assume that an adversary somehow
+obtains the PIN, maybe by scanning the QR code at a distance. That adversary could
+mount MITM or impersonation attacks, and compromise the pairing process. It is
+thus very important to ensure that the PIN is only readable by the user doing
+the pairing.
+</t>
+<t>
+We could also argue that the SAS bypass failure mode may be mitigated by
+specific user designs. For example, instead of just clicking OK, the user
+could be required to enter the SAS displayed by the other device. This
+requires about the same interactions as a PIN based process, and it
+would be slightly safer because the SAS does not
+have to be kept secret once the keys have been exchanged.
+</t>
+
 </section>
 
 <section title="Intra User Pairing and Transitive Pairing">
