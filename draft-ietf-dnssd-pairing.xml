@@ -82,7 +82,7 @@
 <?rfc inline='yes' ?>
 
 <rfc category="std"
-     docName="draft-ietf-dnssd-pairing-03"
+     docName="draft-ietf-dnssd-pairing-04"
      ipr="trust200902">
 
 <front>
@@ -105,20 +105,20 @@
     </author>
 
    <author fullname="Daniel Kaiser" initials="D." surname="Kaiser">
-     <organization>University of Konstanz</organization>
+     <organization> </organization>
       <address>
         <postal>
           <street> </street>
-          <city>Konstanz</city>
-          <code>78457</code>
+          <city>Esch-sur-Alzette</city>
+          <code>4360</code>
           <region></region>
-          <country>Germany</country>
+          <country>Luxembourg</country>
         </postal>
-        <email>daniel.kaiser@uni-konstanz.de</email>
+        <email>daniel@kais3r.de</email>
       </address>
     </author>
 
-    <date year="2017" />
+    <date year="2018" />
 
     <abstract>
         <t>
