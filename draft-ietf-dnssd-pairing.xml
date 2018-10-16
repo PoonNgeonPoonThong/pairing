@@ -50,6 +50,13 @@
 <!ENTITY I-D.ietf-dnssd-privacy PUBLIC ''
    "http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-dnssd-privacy.xml">
 
+
+<!ENTITY I-D.ietf-dnssd-prireq PUBLIC ''
+   "http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-dnssd-prireq.xml">
+
+<!ENTITY I-D.ietf-dnssd-privacyscaling PUBLIC ''
+   "http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-dnssd-privacyscaling.xml">
+
 <!ENTITY I-D.ietf-dnssd-pairing-info PUBLIC ''
    "http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-dnssd-pairing-info.xml">
 
@@ -82,7 +89,7 @@
 <?rfc inline='yes' ?>
 
 <rfc category="std"
-     docName="draft-ietf-dnssd-pairing-03"
+     docName="draft-ietf-dnssd-pairing-04"
      ipr="trust200902">
 
 <front>
@@ -118,7 +125,7 @@
       </address>
     </author>
 
-    <date year="2017" />
+    <date year="2018" />
 
     <abstract>
         <t>
@@ -187,6 +194,11 @@ Many pairing scenarios involve cell phones equipped with cameras capable of
 reading a QR code. In these scenarios, scanning QR codes might be more user friendly than
 selecting names or reading short authentication strings from on screen menus. An optional
 use of QR codes in pairing protocols is presented is <xref target="qrOption" />.
+</t>
+<t>
+DNSSD privacy requirements are analyzed in <xref target="I-D.ietf-dnssd-prireq" />
+and scaling considerations are reviewed in <xref target="I-D.ietf-dnssd-privacyscaling" />.
+Further work on these two drafts may lead to reviewing the mechanism proposed here.
 </t>
 <section title="Requirements">
 <t>
@@ -637,6 +649,8 @@ and for their advice on how to improve it.
 <references title="Informative References">
        &I-D.ietf-dnssd-privacy;
        &I-D.ietf-dnssd-pairing-info;
+       &I-D.ietf-dnssd-prireq;
+       &I-D.ietf-dnssd-privacyscaling;
 
 <reference anchor="K17" target="http://nbn-resolving.de/urn:nbn:de:bsz:352-0-422757">
   <front>
