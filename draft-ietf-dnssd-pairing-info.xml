@@ -94,16 +94,16 @@
 
 
    <author fullname="Daniel Kaiser" initials="D." surname="Kaiser">
-     <organization>University of Konstanz</organization>
+     <organization> </organization>
       <address>
         <postal>
           <street> </street>
-          <city>Konstanz</city>
-          <code>78457</code>
+          <city>Esch-sur-Alzette</city>
+          <code>4360</code>
           <region></region>
-          <country>Germany</country>
+          <country>Luxembourg</country>
         </postal>
-        <email>daniel.kaiser@uni-konstanz.de</email>
+        <email>daniel@kais3r.de</email>
       </address>
     </author>
 
@@ -367,6 +367,59 @@ require the negotiation of word lists or languages inside the pairing protocols.
 <t>
 In contrast, numbers are easy to specify, as in "take a 20 bit number and 
 display it as an integer using decimal notation".
+</t>
+
+</section>
+
+<section title="Revisiting the PIN versus SAS discussion">
+<t>
+In section <xref target="shortpin"/> we presented the drawbacks of using short pins.
+One could object that many of the technical issues could be overcome by use of better
+PAKE algorithms, or by supporting longer PIN. And one could also argue that
+if PIN based pairing algorithms suffer from failure modes such as static PIN
+configuration, SAS based protocols are vulnerable to SAS bypass.
+</t>
+<t>
+The SAS bypass argument is rooted in the psychology of users. In practice, pairing
+processes can be stressful. The user has to discover on each device the proper
+combination of key entries that brings up the required pairing UI, will be anxious
+and eager to complete the procedure, and may well
+be predisposed to click "OK" in the final stage of the algorithm without actually
+verifying the SAS. Some users may bypass the required comparison step, because they
+just want to be done with the pairing.
+</t>
+<t>
+An advantage of PIN based processes is that they cannot be bypassed. The user
+must enter the PIN before continuing. Also, once the PIN is entered, everything
+is automatic. The user does not need to input more data, or press any additional
+button.
+PIN based protocols would be a great fit for the QR-code based interaction. One
+device would display a QR code that contains the PIN. Once the QR code is scanned
+by the other device, the process is automated. 
+</t>
+<t>
+QR based PIN entry may be user friendly, but one of the arguments developed
+in <xref target="shortpin"/> still holds. Let's assume that an adversary somehow
+obtains the PIN, maybe by scanning the QR code at a distance. That adversary could
+mount MITM or impersonation attacks, and compromise the pairing process. It is
+thus very important to ensure that the PIN is only readable by the user doing
+the pairing.
+</t>
+<t>
+We could also argue that the SAS bypass failure mode may be mitigated by
+specific user designs. For example, instead of just clicking OK, the user
+could be required to enter the SAS displayed by the other device. This
+requires about the same interactions as a PIN based process, and it
+would be slightly safer because the SAS does not
+have to be kept secret once the keys have been exchanged.
+</t>
+<t>
+If we summarize the debate, we see that both SAS and PIN based solutions have
+failure modes depending on implementations. In the SAS mode, the failure
+happens when the UI does not force the user to copy the PIN and relies on a
+simple "OK to continue" dialog. In the PIN mode, the failure happens when
+the device fails to generate a random PIN for each session, and comes
+pre-programmed with a simple static PIN of "0000" or "0001".
 </t>
 
 </section>
@@ -716,51 +769,6 @@ matched. The UI might look like this:
 With the use of QR code, the pairing is established with little
 reliance on user judgment, which is arguably safer.
 </t>
-</section>
-
-<section title="Revisiting the PIN versus SAS discussion">
-<t>
-In section <xref target="shortpin"/> we presented the drawbacks of using short pins.
-One could object that many of the technical issues could be overcome by use of better
-PAKE algorithms, or by supporting longer PIN. And one could also argue that
-if PIN based pairing algorithms suffer from failure modes such as static PIN
-configuration, SAS based protocols are vulnerable to SAS bypass.
-</t>
-<t>
-The SAS bypass argument is rooted in the psychology of users. In practice, pairing
-processes can be stressful. The user has to discover on each device the proper
-combination of key entries that brings up the required pairing UI, will be anxious
-and eager to complete the procedure, and may well
-be predisposed to click "OK" in the final stage of the algorithm without actually
-verifying the SAS. Some users may bypass the required comparison step, because they
-just want to be done with the pairing.
-</t>
-<t>
-An advantage of PIN based processes is that they cannot be bypassed. The user
-must enter the PIN before continuing. Also, once the PIN is entered, everything
-is automatic. The user does not need to input more data, or press any additional
-button.
-PIN based protocols would be a great fit for the QR-code based interaction. One
-device would display a QR code that contains the PIN. Once the QR code is scanned
-by the other device, the process is automated. 
-</t>
-<t>
-QR based PIN entry may be user friendly, but one of the arguments developed
-in <xref target="shortpin"/> still holds. Let's assume that an adversary somehow
-obtains the PIN, maybe by scanning the QR code at a distance. That adversary could
-mount MITM or impersonation attacks, and compromise the pairing process. It is
-thus very important to ensure that the PIN is only readable by the user doing
-the pairing.
-</t>
-<t>
-We could also argue that the SAS bypass failure mode may be mitigated by
-specific user designs. For example, instead of just clicking OK, the user
-could be required to enter the SAS displayed by the other device. This
-requires about the same interactions as a PIN based process, and it
-would be slightly safer because the SAS does not
-have to be kept secret once the keys have been exchanged.
-</t>
-
 </section>
 
 <section title="Intra User Pairing and Transitive Pairing">
