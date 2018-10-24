@@ -49,7 +49,8 @@
 
 <!ENTITY I-D.ietf-dnssd-privacy PUBLIC ''
    "http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-dnssd-privacy.xml">
-
+<!ENTITY I-D.ietf-dnssd-prireq PUBLIC ''
+   "http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-dnssd-prireq.xml">
 
 <!ENTITY I-D.ietf-dnssd-pairing PUBLIC ''
    "http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-dnssd-pairing.xml">
@@ -84,7 +85,7 @@
 <?rfc inline='yes' ?>
 
 <rfc category="info"
-     docName="draft-ietf-dnssd-pairing-info-01"
+     docName="draft-ietf-dnssd-pairing-info-02"
      ipr="trust200902">
 
 <front>
@@ -145,11 +146,12 @@
   <t>
 The general pairing requirement is easy to state: establish a trust relation between two entities in a 
 secure manner. But details matter, and in this section we explore the detailed requirements that 
-will guide the design of a pairing protocol.
+will guide the design of a pairing protocol. 
 </t>
  <t>
 This document does not specify an actual pairing protocol, but it served as the basis for
 the design of the pairing protocol developed for DNS-SD privacy <xref target="I-D.ietf-dnssd-pairing"/>.
+The requirement of a pairing system for private discovery are analyzed in part in <xref target="I-D.ietf-dnssd-prireq" />.
 </t>
 <section title="Document Organization" >
 <t>
@@ -837,6 +839,7 @@ requirements from the specification of pairing protocol in <xref target="I-D.iet
        &rfc6189;
        &I-D.ietf-dnssd-pairing;
        &I-D.ietf-dnssd-privacy;
+       &I-D.ietf-dnssd-prireq;
        &I-D.miers-tls-sas;
 
 <reference anchor="NR11" target="">
